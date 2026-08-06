@@ -1,0 +1,19 @@
+{
+  "name": "keysight-configurator",
+  "version": "1.0.0",
+  "description": "Keysight Instrument Option Configurator & Preview Application",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 8080"
+  },
+  "keywords": [
+    "keysight",
+    "instrument",
+    "configurator",
+    "n9010b",
+    "exa"
+  ],
+  "author": "Antigravity AI",
+  "license": "MIT"
+}

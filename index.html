@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Keysight 仪表选件配置与预览系统 (Keysight Configurator)</title>
+  <meta name="description" content="基于 Keysight 官方红黑设计风格的仪表选件配置工具，支持 N9010B EXA 信号分析仪中英文双语选择、建议选件后台维护、依赖校验、实时预览及 PDF/CSV 一键导出。">
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Styles (Cache Busted) -->
+  <link rel="stylesheet" href="styles.css?v=2.2.2">
+</head>
+<body class="dark-theme">
+  <div id="app">
+    <!-- Top Header -->
+    <header class="main-header">
+      <div class="header-container">
+        <div class="brand">
+          <div class="keysight-logo">
+            <span class="ks-red">KEYSIGHT</span>
+            <span class="ks-sub">CONFIGURATOR</span>
+            <span class="version-tag" id="appVersionTag">v2.2.2</span>
+          </div>
+          <div class="model-badge">
+            <span class="dot pulse"></span>
+            <select id="modelSelect" class="model-select">
+              <option value="N9010B">Keysight N9010B EXA Signal Analyzer (10 Hz - 44 GHz)</option>
+              <option value="N9020B">Keysight N9020B MXA Signal Analyzer (10 Hz - 50 GHz)</option>
+              <option value="N9021B">Keysight N9021B MXA Signal Analyzer (10 Hz - 50 GHz / 510 MHz BW)</option>
+              <option value="N9030B">Keysight N9030B PXA Signal Analyzer (10 Hz - 50 GHz / 510 MHz BW)</option>
+              <option value="N9032B">Keysight N9032B PXA Signal Analyzer (2 Hz - 55 GHz / 2 GHz RTSA BW)</option>
+              <option value="N9040B">Keysight N9040B UXA Signal Analyzer (10 Hz - 50 GHz / 1 GHz BW / 14.1" Screen)</option>
+              <option value="N9042B">Keysight N9042B UXA Signal Analyzer (2 Hz - 50 GHz / 110 GHz Ext / 4 GHz BW)</option>
+              <option value="N5186A">Keysight N5186A MXG Vector Signal Generator (9 kHz - 8.5 GHz / 4-Ch / 960 MHz BW)</option>
+              <option value="N5182B">Keysight N5182B MXG Vector Signal Generator (9 kHz - 6 GHz / 160 MHz BW)</option>
+              <option value="M9415A">Keysight M9415A VXT PXIe Transceiver (380 MHz - 12 GHz / 1.2 GHz BW / VSG+VSA)</option>
+              <option value="M9415B">Keysight M9415B VXT PXIe Transceiver (380 MHz - 20 GHz / 1.2 GHz BW / Analog BBIQ)</option>
+              <option value="E6680E">Keysight E6680E Wireless Test Set (Wi-Fi 6E/7/8 & 5G, 800 MHz BW)</option>
+              <option value="E5080B" disabled>Keysight E5080B ENA (Coming Soon)</option>
+            </select>
+          </div>
+          <a id="datasheetBtn" href="docs/n9010b_config_guide.pdf" target="_blank" class="datasheet-btn" title="查看 Keysight 官方 PDF 选件配置指南 (View Official Configuration Guide)">
+            <i data-lucide="file-text"></i> <span id="txtDatasheet">官方配置指南</span>
+          </a>
+        </div>
+
+        <div class="header-actions">
+          <!-- Language Toggle Switcher (中英双语切换) -->
+          <div class="lang-switcher">
+            <button id="langZhBtn" class="lang-btn active" data-lang="zh">中文</button>
+            <button id="langEnBtn" class="lang-btn" data-lang="en">EN</button>
+          </div>
+
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="searchInput" placeholder="搜索选件编号或关键词 (如: 544, P07, 5G, B40)...">
+          </div>
+
+          <!-- Admin Maintenance Button (后台管理) -->
+          <button id="adminBtn" class="btn btn-secondary" title="后台选件与仪表信息维护">
+            <i data-lucide="settings"></i> <span id="txtAdmin">后台管理</span>
+          </button>
+
+          <button id="importBtn" class="btn btn-secondary" title="导入 JSON 配置文件">
+            <i data-lucide="upload"></i> <span id="txtImport">导入配置</span>
+          </button>
+          <input type="file" id="jsonFileInput" accept=".json" style="display: none;">
+
+          <button id="resetBtn" class="btn btn-ghost" title="重置选件">
+            <i data-lucide="rotate-ccw"></i> <span id="txtReset">重置</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-body">
+      <!-- Left Step Navigation & Option Content -->
+      <section class="config-section">
+        <!-- Step Navigation Horizontal Bar -->
+        <nav class="step-nav-wrapper">
+          <div class="step-nav-header">
+            <h2><i data-lucide="layers"></i> <span id="txtConfigSteps">配置步骤 (Configuration Steps)</span></h2>
+            <div class="progress-indicator">
+              <span id="completedStepsText" class="font-mono text-red">Step 1 / 15</span>
+              <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 6.6%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div id="stepTabs" class="step-tabs">
+            <!-- Step Tabs populated dynamically -->
+          </div>
+        </nav>
+
+        <!-- Validation Alert Banner -->
+        <div id="alertContainer" class="alert-container">
+          <!-- Validation alerts inserted dynamically -->
+        </div>
+
+        <!-- Step Detail & Option Selector Cards Grid -->
+        <div id="stepContent" class="step-content">
+          <!-- Options populated dynamically -->
+        </div>
+      </section>
+
+      <!-- Right Real-Time Preview Drawer / Summary Sidebar -->
+      <aside id="previewDrawer" class="preview-drawer">
+        <div class="drawer-header">
+          <h3><i data-lucide="clipboard-list"></i> <span id="txtPreviewTitle">配置实时预览</span></h3>
+          <button id="closeDrawerBtn" class="drawer-close-btn mobile-only"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="drawer-body">
+          <!-- Selected Model Card -->
+          <div class="model-info-card">
+            <div class="model-title" id="drawerModelTitle">N9010B EXA Signal Analyzer</div>
+            <div class="model-doc" id="drawerModelDoc">手册资料编号: 5992-1253</div>
+            
+            <div class="spec-pills">
+              <div class="spec-pill">
+                <span class="pill-label" id="lblMaxFreq">最大频率:</span>
+                <span id="specMaxFreq" class="pill-value highlight-red">未选择</span>
+              </div>
+              <div class="spec-pill">
+                <span class="pill-label" id="lblBandwidth">分析带宽:</span>
+                <span id="specBandwidth" class="pill-value">25 MHz (Standard)</span>
+              </div>
+              <div class="spec-pill">
+                <span class="pill-label" id="lblPreamp">前置放大:</span>
+                <span id="specPreamp" class="pill-value">无</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Base Standard Features Summary -->
+          <div class="collapsible-section">
+            <div class="section-title"><i data-lucide="check-circle-2"></i> <span id="txtBaseIncluded">基础出厂标配组件</span></div>
+            <ul id="standardList" class="standard-list">
+              <li>物理频谱分析应用软件标准版</li>
+              <li>四核高性能处理器 / 16 GB RAM</li>
+              <li>可拆卸 M.2 NVMe 固态硬盘</li>
+              <li>Windows 11 操作系统</li>
+            </ul>
+          </div>
+
+          <!-- Selected Options List -->
+          <div class="selected-options-section">
+            <div class="section-title">
+              <span><i data-lucide="check-square"></i> <span id="txtSelectedList">已选选件清单</span> (<span id="selectedCount">0</span>)</span>
+            </div>
+            <div id="selectedOptionsList" class="selected-options-list">
+              <!-- Selected options populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Drawer Footer Export Action Buttons -->
+        <div class="drawer-footer">
+          <div class="footer-actions">
+            <button id="exportPdfBtn" class="btn btn-primary btn-block">
+              <i data-lucide="file-text"></i> <span id="txtExportPdf">生成并打印 PDF 报告</span>
+            </button>
+            <div class="btn-group">
+              <button id="exportCsvBtn" class="btn btn-secondary flex-1">
+                <i data-lucide="table"></i> <span id="txtExportCsv">导出 CSV</span>
+              </button>
+              <button id="exportJsonBtn" class="btn btn-secondary flex-1">
+                <i data-lucide="download"></i> <span id="txtExportJson">保存 JSON</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Mobile Bottom Floating Action Bar -->
+    <div class="mobile-float-bar">
+      <div class="float-info">
+        <span class="float-label" id="txtMobileLabel">已选择选件:</span>
+        <span id="mobileCount" class="float-value">0 项</span>
+      </div>
+      <button id="openMobileDrawerBtn" class="btn btn-primary">
+        <i data-lucide="eye"></i> <span id="txtMobileBtn">查看配置预览</span>
+      </button>
+    </div>
+
+    <!-- Option Details Modal -->
+    <div id="optionModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">选件详情</h3>
+          <button id="modalCloseBtn" class="modal-close"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Detailed content inserted dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button id="modalSelectToggleBtn" class="btn btn-primary">选择此选件</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Password Login Modal (后台密码身份验证弹窗) -->
+    <div id="adminLoginModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card admin-login-card">
+        <div class="modal-header">
+          <h3><i data-lucide="lock" style="color: var(--ks-red);"></i> <span id="txtLoginTitle">管理员身份验证 (Admin Password Required)</span></h3>
+          <button id="loginCloseBtn" class="modal-close"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+          <p style="margin-bottom: 12px; color: var(--text-sub); font-size: 13px;" id="txtLoginNotice">
+            进入后台维护需验证管理员密码（默认初始密码: <strong>admin</strong>）：
+          </p>
+          <div style="margin-bottom: 16px;">
+            <input type="password" id="adminPasswordInput" class="admin-pwd-input" placeholder="请输入管理员密码..." autocomplete="current-password">
+            <div id="pwdErrorMsg" class="pwd-error-msg" style="display: none;">密码错误，请重新输入！</div>
+          </div>
+        </div>
+        <div class="modal-footer" style="gap: 10px;">
+          <button id="loginCancelBtn" class="btn btn-ghost">取消</button>
+          <button id="loginSubmitBtn" class="btn btn-primary"><i data-lucide="key-round"></i> <span id="txtLoginBtn">验证并登录</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Admin CMS Maintenance Modal (后台全量维护管理弹窗) -->
+    <div id="adminModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card admin-modal-card">
+        <div class="modal-header">
+          <h3><i data-lucide="settings" style="color: var(--ks-red);"></i> <span id="txtAdminModalTitle">后台维护 - 仪表与选件全量管理 (Admin CMS)</span></h3>
+          <button id="adminCloseBtn" class="modal-close"><i data-lucide="x"></i></button>
+        </div>
+        
+        <!-- Admin CMS Nav Tabs Header -->
+        <div class="admin-tab-bar">
+          <button class="admin-tab-btn active" data-admin-tab="instInfo"><i data-lucide="cpu"></i> 仪表基本信息编辑</button>
+          <button class="admin-tab-btn" data-admin-tab="optEditor"><i data-lucide="list-tree"></i> 选件编辑与维护 (123项)</button>
+          <button class="admin-tab-btn" data-admin-tab="recOpts"><i data-lucide="star"></i> 建议选件快捷标注</button>
+        </div>
+
+        <!-- Admin Tab 1: Instrument Info Edit -->
+        <div id="adminTabContent_instInfo" class="admin-tab-content active">
+          <div class="admin-form-grid">
+            <div class="admin-form-group">
+              <label>仪表型号名称 (Instrument Name):</label>
+              <input type="text" id="cfgInstName" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>仪表副标题 (Subtitle):</label>
+              <input type="text" id="cfgInstSubtitle" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>手册资料编号 (Doc Ref No.):</label>
+              <input type="text" id="cfgInstDoc" class="admin-input">
+            </div>
+            <div class="admin-form-group span-2">
+              <label>仪表简介与描述 (Description):</label>
+              <textarea id="cfgInstDesc" class="admin-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label>标配显示屏 (Display Spec):</label>
+              <input type="text" id="cfgSpecDisplay" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>标配处理器/内存 (Processor Spec):</label>
+              <input type="text" id="cfgSpecProcessor" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>标配固态硬盘 (Storage Spec):</label>
+              <input type="text" id="cfgSpecStorage" class="admin-input">
+            </div>
+            <div class="admin-form-group">
+              <label>标配操作系统 (OS Spec):</label>
+              <input type="text" id="cfgSpecOS" class="admin-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Tab 2: Options CMS Editor -->
+        <div id="adminTabContent_optEditor" class="admin-tab-content">
+          <div class="admin-toolbar">
+            <select id="adminStepFilter" class="admin-select" style="width: 220px;">
+              <!-- Step options populated dynamically -->
+            </select>
+            <div class="search-box admin-search" style="flex: 1;">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="adminOptSearchInput" placeholder="在后台搜索选件编号或名称...">
+            </div>
+            <button id="addNewOptBtn" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
+              <i data-lucide="plus"></i> 新增选件
+            </button>
+          </div>
+
+          <div class="admin-modal-body" id="adminOptEditorBody">
+            <!-- Full Options Table populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Admin Tab 3: Recommended Toggles -->
+        <div id="adminTabContent_recOpts" class="admin-tab-content">
+          <div class="admin-toolbar">
+            <div class="search-box admin-search" style="width: 320px;">
+              <i data-lucide="search" class="search-icon"></i>
+              <input type="text" id="adminSearchInput" placeholder="搜索选件编号或名称...">
+            </div>
+            <button id="resetRecBtn" class="btn btn-ghost" style="padding: 4px 10px; font-size: 12px;">
+              <i data-lucide="rotate-ccw"></i> <span id="txtResetRec">重置为默认建议</span>
+            </button>
+          </div>
+
+          <div class="admin-modal-body" id="adminModalBody">
+            <!-- Recommended options switches table populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Admin Modal Footer -->
+        <div class="modal-footer" style="justify-content: space-between; background: #181818;">
+          <button id="resetSystemDataBtn" class="btn btn-ghost" style="color: var(--color-danger);" title="抹除所有自定义修改并还原为 5992-1253 官方出厂数据">
+            <i data-lucide="rotate-ccw"></i> 恢复系统出厂默认数据
+          </button>
+          <button id="adminSaveBtn" class="btn btn-primary"><i data-lucide="check"></i> <span id="txtAdminSave">保存并应用设置</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Option Sub-Modal (单项选件编辑/新增弹窗) -->
+    <div id="editOptionSubModal" class="modal-overlay" style="display: none; z-index: 210;">
+      <div class="modal-card sub-modal-card">
+        <div class="modal-header">
+          <h3 id="optSubModalTitle">编辑选件信息</h3>
+          <button id="editOptCloseBtn" class="modal-close"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body sub-modal-body">
+          <form id="editOptForm" class="sub-modal-form">
+            <input type="hidden" id="editOptId">
+            <div class="admin-form-group">
+              <label>所属步骤 (Step):</label>
+              <select id="editOptStepId" class="admin-select">
+                <!-- Step options -->
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label>选件代码 (Option Code):</label>
+              <input type="text" id="editOptCode" class="admin-input" required placeholder="如: N9010B-B40">
+            </div>
+            <div class="admin-form-group">
+              <label>中文名称 (Chinese Name):</label>
+              <input type="text" id="editOptName" class="admin-input" required placeholder="如: 40 MHz 分析带宽">
+            </div>
+            <div class="admin-form-group">
+              <label>英文名称 (English Name):</label>
+              <input type="text" id="editOptEnglishName" class="admin-input" required placeholder="e.g. 40 MHz analysis bandwidth">
+            </div>
+            <div class="admin-form-group">
+              <label>选件分类 (Category):</label>
+              <input type="text" id="editOptCategory" class="admin-input" required placeholder="如: Analysis Bandwidth">
+            </div>
+            <div class="admin-form-group">
+              <label>参考价格 (Price Estimate):</label>
+              <input type="text" id="editOptPrice" class="admin-input" placeholder="如: +$5,600 或 Standard">
+            </div>
+            <div class="admin-form-group span-2">
+              <label>中文功能描述 (Chinese Description):</label>
+              <textarea id="editOptDesc" class="admin-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group span-2">
+              <label>英文功能描述 (English Description):</label>
+              <textarea id="editOptEnglishDesc" class="admin-textarea" rows="2"></textarea>
+            </div>
+            <div class="admin-form-group" style="flex-direction: row; gap: 8px; align-items: center;">
+              <input type="checkbox" id="editOptIsStandard" style="width: 16px; height: 16px;">
+              <label for="editOptIsStandard" style="margin: 0; cursor: pointer;">出厂标配 (Factory Standard)</label>
+            </div>
+            <div class="admin-form-group" style="flex-direction: row; gap: 8px; align-items: center;">
+              <input type="checkbox" id="editOptIsRecommended" style="width: 16px; height: 16px;">
+              <label for="editOptIsRecommended" style="margin: 0; cursor: pointer;">标注为建议选件 (Recommended)</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer" style="gap: 10px; background: #181818;">
+          <button id="editOptCancelBtn" class="btn btn-ghost">取消</button>
+          <button id="editOptSaveBtn" class="btn btn-primary"><i data-lucide="check"></i> 保存选件信息</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Logic with Cache-Busting -->
+  <script type="module" src="js/app.js?v=2.2.2"></script>
+</body>
+</html>
