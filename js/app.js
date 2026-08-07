@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.5";
+export const APP_VERSION = "v2.2.6";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -557,7 +557,8 @@ class ConfiguratorApp {
         if (fixBtn) {
           const actionType = fixBtn.getAttribute("data-fix-type");
           const optionId = fixBtn.getAttribute("data-fix-opt");
-          this.handleAutoFix(actionType, optionId);
+          const removeOptionId = fixBtn.getAttribute("data-remove-opt");
+          this.handleAutoFix(actionType, optionId, removeOptionId);
         }
 
         const gotoBtn = e.target.closest("[data-action='goto-step']");
@@ -1330,6 +1331,7 @@ class ConfiguratorApp {
       const alertTitle = isEn ? (a.englishTitle || a.title) : a.title;
       const alertMsg = isEn ? (a.englishMessage || a.message) : a.message;
       const fixText = a.fixAction ? (isEn ? (a.fixAction.englishText || a.fixAction.text) : a.fixAction.text) : "";
+      const fixTextAlt = a.fixActionAlt ? (isEn ? (a.fixActionAlt.englishText || a.fixActionAlt.text) : a.fixActionAlt.text) : "";
       
       const targetStepObj = a.targetStepId ? this.currentInstrument.steps.find(s => s.id === a.targetStepId) : null;
       const showGotoBtn = a.targetStepId && this.currentStepId !== a.targetStepId;
@@ -1343,15 +1345,20 @@ class ConfiguratorApp {
               <div>${alertMsg}</div>
             </div>
           </div>
-          <div style="display: flex; gap: 6px; align-items: center;">
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
             ${showGotoBtn ? `
               <button class="alert-fix-btn" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5);" data-action="goto-step" data-step-id="${a.targetStepId}">
                 📍 ${isEn ? `Go to Step ${targetStepObj ? targetStepObj.stepNumber : ''}` : `跳转至 Step ${targetStepObj ? targetStepObj.stepNumber : ''} 选择`}
               </button>
             ` : ''}
             ${a.fixAction ? `
-              <button class="alert-fix-btn" data-action="autofix" data-fix-type="${a.fixAction.actionType}" data-fix-opt="${a.fixAction.targetOptionId || a.fixAction.optionId}">
+              <button class="alert-fix-btn" data-action="autofix" data-fix-type="${a.fixAction.actionType}" data-fix-opt="${a.fixAction.targetOptionId || a.fixAction.optionId}" data-remove-opt="${a.fixAction.removeOptionId || ''}">
                 ⚡ ${fixText}
+              </button>
+            ` : ''}
+            ${a.fixActionAlt ? `
+              <button class="alert-fix-btn" style="background: rgba(16,185,129,0.3); border: 1px solid rgba(16,185,129,0.6);" data-action="autofix" data-fix-type="${a.fixActionAlt.actionType}" data-fix-opt="${a.fixActionAlt.targetOptionId || a.fixActionAlt.optionId}" data-remove-opt="${a.fixActionAlt.removeOptionId || ''}">
+                ⚡ ${fixTextAlt}
               </button>
             ` : ''}
           </div>
@@ -1360,21 +1367,32 @@ class ConfiguratorApp {
     }).join("");
   }
 
-  handleAutoFix(actionType, optionId) {
-    logger.action("AUTO_FIX", `Applied autofix ${actionType} for option ${optionId}`);
-    if (actionType === "add_option" || actionType === "change_freq") {
-      if (!this.selectedOptionIds.includes(optionId)) {
-        if (actionType === "change_freq") {
-          const step1 = this.currentInstrument.steps.find(s => s.stepNumber === 1);
-          if (step1) {
-            step1.options.forEach(o => {
-              if (!o.isStandard) {
-                const idx = this.selectedOptionIds.indexOf(o.id);
-                if (idx > -1) this.selectedOptionIds.splice(idx, 1);
-              }
-            });
-          }
+  handleAutoFix(actionType, optionId, removeOptionId) {
+    logger.action("AUTO_FIX", `Applied autofix ${actionType} optionId=${optionId} removeOptionId=${removeOptionId}`);
+    if (actionType === "change_preamp") {
+      if (removeOptionId) {
+        const idx = this.selectedOptionIds.indexOf(removeOptionId);
+        if (idx > -1) this.selectedOptionIds.splice(idx, 1);
+      }
+      if (optionId && !this.selectedOptionIds.includes(optionId)) {
+        this.selectedOptionIds.push(optionId);
+      }
+    } else if (actionType === "remove_option") {
+      const idx = this.selectedOptionIds.indexOf(optionId);
+      if (idx > -1) this.selectedOptionIds.splice(idx, 1);
+    } else if (actionType === "add_option" || actionType === "change_freq") {
+      if (actionType === "change_freq") {
+        const step1 = this.currentInstrument.steps.find(s => s.stepNumber === 1);
+        if (step1) {
+          step1.options.forEach(o => {
+            if (!o.isStandard) {
+              const idx = this.selectedOptionIds.indexOf(o.id);
+              if (idx > -1) this.selectedOptionIds.splice(idx, 1);
+            }
+          });
         }
+      }
+      if (optionId && !this.selectedOptionIds.includes(optionId)) {
         this.selectedOptionIds.push(optionId);
       }
     }

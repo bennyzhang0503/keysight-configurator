@@ -98,6 +98,7 @@ export const N9010B_DATA = {
       "options": [
         {
           "id": "N9010B-P03",
+          "freqLimitGHz": 3.6,
           "code": "N9010B-P03",
           "name": "前置放大器 100 kHz 至 3.6 GHz (Preamplifier 3.6 GHz)",
           "englishName": "Preamplifier, 100 kHz to 3.6 GHz",
@@ -115,6 +116,7 @@ export const N9010B_DATA = {
         },
         {
           "id": "N9010B-P07",
+          "freqLimitGHz": 7.0,
           "code": "N9010B-P07",
           "name": "前置放大器 100 kHz 至 7 GHz (Preamplifier 7 GHz)",
           "englishName": "Preamplifier, 100 kHz to 7 GHz",
@@ -131,6 +133,7 @@ export const N9010B_DATA = {
         },
         {
           "id": "N9010B-P13",
+          "freqLimitGHz": 13.6,
           "code": "N9010B-P13",
           "name": "前置放大器 100 kHz 至 13.6 GHz (Preamplifier 13.6 GHz)",
           "englishName": "Preamplifier, 100 kHz to 13.6 GHz",
@@ -146,6 +149,7 @@ export const N9010B_DATA = {
         },
         {
           "id": "N9010B-P26",
+          "freqLimitGHz": 26.5,
           "code": "N9010B-P26",
           "name": "前置放大器 100 kHz 至 26.5 GHz (Preamplifier 26.5 GHz)",
           "englishName": "Preamplifier, 100 kHz to 26.5 GHz",
@@ -160,6 +164,7 @@ export const N9010B_DATA = {
         },
         {
           "id": "N9010B-P32",
+          "freqLimitGHz": 32.0,
           "code": "N9010B-P32",
           "name": "前置放大器 100 kHz 至 32 GHz (Preamplifier 32 GHz)",
           "englishName": "Preamplifier, 100 kHz to 32 GHz",
@@ -173,6 +178,7 @@ export const N9010B_DATA = {
         },
         {
           "id": "N9010B-P44",
+          "freqLimitGHz": 44.0,
           "code": "N9010B-P44",
           "name": "前置放大器 100 kHz 至 44 GHz (Preamplifier 44 GHz)",
           "englishName": "Preamplifier, 100 kHz to 44 GHz",

@@ -49,7 +49,7 @@ export class RuleEngine {
     let preampStep = null;
     for (const id of selectedOptionIds) {
       const info = findOptionWithStep(id);
-      if (info && (info.option.category === "Preamplifier" || (info.step.stepNumber === 2 && info.option.code.startsWith("P")))) {
+      if (info && (info.option.category === "Preamplifier" || (info.step.stepNumber === 2 && info.option.code.includes("-P")))) {
         preampOption = info.option;
         preampStep = info.step;
         break;
@@ -66,20 +66,35 @@ export class RuleEngine {
         const targetFreqOpt = step1 ? step1.options.find(o => o.code.endsWith(targetFreqCode) || o.code === targetFreqCode) : null;
         const fixOptId = targetFreqOpt ? targetFreqOpt.id : `${instrument.id}-${targetFreqCode}`;
 
+        // Find matching preamp option for current frequency range
+        const matchingPreamp = preampStep ? preampStep.options.find(o => o.compatibleFreqs && (o.compatibleFreqs.includes(freqCode) || o.compatibleFreqs.includes(selectedFreqOption.code))) : null;
+
         alerts.push({
           type: "warning",
           code: "INCOMPATIBLE_PREAMP",
           title: `预放大器兼容性问题：${preampOption.code}`,
           englishTitle: `Preamplifier Compatibility Warning: ${preampOption.code}`,
-          message: `前置放大器 ${preampOption.code} 无法与频率范围选项 ${selectedFreqOption.code} (最高 ${selectedFreqOption.freqMaxGHz || ''} GHz) 匹配。请提升频段选项或选择匹配的预放大器。`,
+          message: `前置放大器 ${preampOption.code} (最高 ${preampOption.freqLimitGHz || ''} GHz) 无法与频率范围选项 ${selectedFreqOption.code} (最高 ${selectedFreqOption.freqMaxGHz || ''} GHz) 匹配。请提升频段选项或选择匹配的预放大器。`,
           englishMessage: `Preamplifier ${preampOption.code} is incompatible with Option ${selectedFreqOption.code}. Please upgrade frequency range or choose matching preamp.`,
           targetOptionId: preampOption.id,
           targetStepId: preampStep ? preampStep.id : "step2",
           fixAction: {
-            text: `更改频率为 Option ${targetFreqCode}`,
-            englishText: `Change frequency to Option ${targetFreqCode}`,
+            text: `提升频率为 Option ${targetFreqCode}`,
+            englishText: `Upgrade frequency to Option ${targetFreqCode}`,
             actionType: "change_freq",
             targetOptionId: fixOptId
+          },
+          fixActionAlt: matchingPreamp ? {
+            text: `更改预放大器为 ${matchingPreamp.code}`,
+            englishText: `Change preamp to ${matchingPreamp.code}`,
+            actionType: "change_preamp",
+            targetOptionId: matchingPreamp.id,
+            removeOptionId: preampOption.id
+          } : {
+            text: `移除不兼容的前置放大器 ${preampOption.code}`,
+            englishText: `Remove incompatible preamp ${preampOption.code}`,
+            actionType: "remove_option",
+            optionId: preampOption.id
           }
         });
       }
