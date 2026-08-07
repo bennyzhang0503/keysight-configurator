@@ -2,9 +2,30 @@
 
 export class LoggerService {
   constructor() {
-    this.logs = [];
     this.maxLogs = 1000;
+    this.logs = this.loadLogsFromSession();
     this.initGlobalErrorHandler();
+  }
+
+  loadLogsFromSession() {
+    try {
+      if (typeof sessionStorage !== "undefined") {
+        const saved = sessionStorage.getItem("ks_debug_logs");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      }
+    } catch(e) {}
+    return [];
+  }
+
+  saveLogsToSession() {
+    try {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem("ks_debug_logs", JSON.stringify(this.logs));
+      }
+    } catch(e) {}
   }
 
   log(category, message, extraData = null, level = "INFO") {
@@ -21,6 +42,7 @@ export class LoggerService {
     if (this.logs.length > this.maxLogs) {
       this.logs.shift();
     }
+    this.saveLogsToSession();
   }
 
   info(category, message, extraData) {
@@ -45,6 +67,11 @@ export class LoggerService {
 
   clearLogs() {
     this.logs = [];
+    try {
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.removeItem("ks_debug_logs");
+      }
+    } catch(e) {}
     this.info("SYSTEM", "User cleared operation logs.");
   }
 
