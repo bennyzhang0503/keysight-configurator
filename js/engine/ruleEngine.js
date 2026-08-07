@@ -6,81 +6,107 @@ export class RuleEngine {
    * @param {Object} instrument - Current instrument model object
    * @param {Array} selectedOptionIds - Array of option IDs selected
    * @param {Object} selectedLicenses - Map of optionId -> { licenseType, licenseTerm }
-   * @returns {Object} { alerts: Array, autoFixActions: Array, isComplete: Boolean }
+   * @returns {Object} { alerts: Array, isComplete: Boolean, selectedFreqOption: Object }
    */
   static validate(instrument, selectedOptionIds, selectedLicenses = {}) {
     const alerts = [];
-    const autoFixActions = [];
     const selectedSet = new Set(selectedOptionIds);
 
-    // Helper: Find option object by ID
-    const findOption = (id) => {
+    // Helper: Find option object and its parent step by ID
+    const findOptionWithStep = (id) => {
       for (const step of instrument.steps) {
         const found = step.options.find(opt => opt.id === id);
-        if (found) return found;
+        if (found) return { option: found, step };
       }
       return null;
     };
 
+    const findOption = (id) => {
+      const res = findOptionWithStep(id);
+      return res ? res.option : null;
+    };
+
     // 1. Validate Required Steps (Step 1 is required: Must choose 1 frequency range)
     const step1 = instrument.steps.find(s => s.stepNumber === 1);
+    let selectedFreqOption = null;
     if (step1) {
-      const hasStep1Selected = step1.options.some(opt => selectedSet.has(opt.id));
-      if (!hasStep1Selected) {
+      selectedFreqOption = step1.options.find(opt => selectedSet.has(opt.id));
+      if (!selectedFreqOption) {
         alerts.push({
           type: "danger",
           code: "REQ_FREQ",
           title: "必选项目缺失：最高频率范围",
-          message: "Step 1 频率范围为系统运行的必要主选项，请选择其中一个频率范围（如 N9010B-503 3.6GHz 或 N9010B-544 44GHz）。",
-          targetStepId: "step1"
+          englishTitle: "Required Item Missing: Frequency Range",
+          message: `Step 1 频率范围为 ${instrument.name} 系统运行的必要主选项，请选择其中一个频率范围。`,
+          englishMessage: `Step 1 Frequency Range is mandatory for ${instrument.name}. Please select a frequency range.`,
+          targetStepId: step1.id
         });
       }
     }
 
-    // Identify current selected frequency option
-    let selectedFreqOption = null;
-    if (step1) {
-      selectedFreqOption = step1.options.find(opt => selectedSet.has(opt.id));
+    // 2. Validate Step 2: Preamplifier Frequency Compatibility
+    let preampOption = null;
+    let preampStep = null;
+    for (const id of selectedOptionIds) {
+      const info = findOptionWithStep(id);
+      if (info && (info.option.category === "Preamplifier" || (info.step.stepNumber === 2 && info.option.code.startsWith("P")))) {
+        preampOption = info.option;
+        preampStep = info.step;
+        break;
+      }
     }
 
-    // 2. Validate Step 2: Preamplifier Frequency Compatibility
-    const preampOption = findOption(selectedOptionIds.find(id => id.startsWith("N9010B-P")));
     if (preampOption && selectedFreqOption) {
-      const preCode = preampOption.code; // e.g. P07
-      const freqCode = selectedFreqOption.code; // e.g. 503
-      
-      if (preampOption.compatibleFreqs && !preampOption.compatibleFreqs.includes(freqCode)) {
+      const freqCode = selectedFreqOption.code.replace(/^[A-Z0-9]+-/, '');
+      if (preampOption.compatibleFreqs && 
+          !preampOption.compatibleFreqs.includes(freqCode) && 
+          !preampOption.compatibleFreqs.includes(selectedFreqOption.code)) {
+        
+        const targetFreqCode = preampOption.compatibleFreqs[0];
+        const targetFreqOpt = step1 ? step1.options.find(o => o.code.endsWith(targetFreqCode) || o.code === targetFreqCode) : null;
+        const fixOptId = targetFreqOpt ? targetFreqOpt.id : `${instrument.id}-${targetFreqCode}`;
+
         alerts.push({
           type: "warning",
           code: "INCOMPATIBLE_PREAMP",
           title: `预放大器兼容性问题：${preampOption.code}`,
-          message: `前置放大器 ${preampOption.code} (最高 ${preampOption.freqLimitGHz} GHz) 无法与频率范围选项 Option ${freqCode} (最高 ${selectedFreqOption.freqMaxGHz} GHz) 匹配。请提升频段选项或选择匹配的预放大器。`,
+          englishTitle: `Preamplifier Compatibility Warning: ${preampOption.code}`,
+          message: `前置放大器 ${preampOption.code} 无法与频率范围选项 ${selectedFreqOption.code} (最高 ${selectedFreqOption.freqMaxGHz || ''} GHz) 匹配。请提升频段选项或选择匹配的预放大器。`,
+          englishMessage: `Preamplifier ${preampOption.code} is incompatible with Option ${selectedFreqOption.code}. Please upgrade frequency range or choose matching preamp.`,
           targetOptionId: preampOption.id,
+          targetStepId: preampStep ? preampStep.id : "step2",
           fixAction: {
-            text: `更改频率为 Option ${preampOption.compatibleFreqs[0]}`,
+            text: `更改频率为 Option ${targetFreqCode}`,
+            englishText: `Change frequency to Option ${targetFreqCode}`,
             actionType: "change_freq",
-            targetOptionId: `N9010B-${preampOption.compatibleFreqs[0]}`
+            targetOptionId: fixOptId
           }
         });
       }
     }
 
     // 3. Validate Step 5: Analysis Bandwidth B40 dependency on MPB for > 3.6 GHz
-    if (selectedSet.has("N9010B-B40")) {
+    const b40Info = selectedOptionIds.map(id => findOptionWithStep(id)).find(info => info && (info.option.code.endsWith("-B40") || info.option.code === "B40"));
+    if (b40Info) {
       const isFreqAbove3_6 = selectedFreqOption && selectedFreqOption.freqMaxGHz > 3.6;
-      const hasMPB = selectedSet.has("N9010B-MPB");
+      const mpbOpt = instrument.steps.flatMap(s => s.options).find(o => o.code.endsWith("-MPB") || o.code === "MPB");
+      const hasMPB = mpbOpt && selectedSet.has(mpbOpt.id);
 
-      if (isFreqAbove3_6 && !hasMPB) {
+      if (isFreqAbove3_6 && mpbOpt && !hasMPB) {
         alerts.push({
           type: "warning",
           code: "MISSING_MPB",
           title: "分析带宽选件条件提示：需选配 Option MPB",
+          englishTitle: "Analysis Bandwidth Requirement: Option MPB",
           message: "当分析带宽选择 40 MHz (Option B40) 且最高频率大于 3.6 GHz 时，测量宽带信号必须添加 Option MPB (微波预选器旁路)。",
-          targetOptionId: "N9010B-B40",
+          englishMessage: "When 40 MHz bandwidth (Option B40) is selected with max freq > 3.6 GHz, Option MPB is required.",
+          targetOptionId: b40Info.option.id,
+          targetStepId: b40Info.step.id,
           fixAction: {
-            text: "一键自动添加 Option MPB",
+            text: `一键自动添加 ${mpbOpt.code}`,
+            englishText: `Add Option ${mpbOpt.code}`,
             actionType: "add_option",
-            optionId: "N9010B-MPB"
+            optionId: mpbOpt.id
           }
         });
       }
@@ -88,20 +114,26 @@ export class RuleEngine {
 
     // 4. Validate General Prerequisites (e.g. 89601B7RC requires 89601200C; M1971W requires EXM)
     selectedOptionIds.forEach(id => {
-      const opt = findOption(id);
-      if (opt && opt.requires) {
-        opt.requires.forEach(reqId => {
+      const info = findOptionWithStep(id);
+      if (info && info.option.requires) {
+        info.option.requires.forEach(reqId => {
           if (!selectedSet.has(reqId)) {
-            const reqOpt = findOption(reqId);
-            const reqName = reqOpt ? `${reqOpt.code} (${reqOpt.name})` : reqId;
+            const reqInfo = findOptionWithStep(reqId);
+            const reqName = reqInfo ? `${reqInfo.option.code} (${reqInfo.option.name})` : reqId;
+            const reqStepId = reqInfo ? reqInfo.step.id : info.step.id;
+            
             alerts.push({
               type: "danger",
               code: "MISSING_PREREQ",
-              title: `依赖选件缺失：${opt.code} 依赖 ${reqOpt ? reqOpt.code : reqId}`,
-              message: `选项 ${opt.code} 要求系统包含前置选件 ${reqName}。`,
-              targetOptionId: opt.id,
+              title: `依赖选件缺失：${info.option.code} 依赖 ${reqInfo ? reqInfo.option.code : reqId}`,
+              englishTitle: `Prerequisite Missing: ${info.option.code} requires ${reqInfo ? reqInfo.option.code : reqId}`,
+              message: `选项 ${info.option.code} 要求系统包含前置选件 ${reqName}。`,
+              englishMessage: `Option ${info.option.code} requires prerequisite option ${reqName}.`,
+              targetOptionId: info.option.id,
+              targetStepId: reqStepId,
               fixAction: {
-                text: `自动补全选件 ${reqOpt ? reqOpt.code : reqId}`,
+                text: `自动补全选件 ${reqInfo ? reqInfo.option.code : reqId}`,
+                englishText: `Add required option ${reqInfo ? reqInfo.option.code : reqId}`,
                 actionType: "add_option",
                 optionId: reqId
               }
@@ -111,18 +143,26 @@ export class RuleEngine {
       }
     });
 
-    // 5. Validate External Mixers (M1971W / 11970A requires EXM and freq 532 or 544)
-    if (selectedSet.has("M1971W")) {
+    // 5. Validate External Mixers (e.g. M1971W requires 32GHz+ hardware)
+    const m1971wInfo = selectedOptionIds.map(id => findOptionWithStep(id)).find(info => info && info.option.code === "M1971W");
+    if (m1971wInfo) {
       if (selectedFreqOption && selectedFreqOption.freqMaxGHz < 32.0) {
+        const target532Opt = step1 ? step1.options.find(o => o.code.endsWith("532")) : null;
+        const fixOptId = target532Opt ? target532Opt.id : `${instrument.id}-532`;
+
         alerts.push({
           type: "warning",
           code: "MIXER_FREQ_LIMIT",
           title: "毫米波混频器频率警告：M1971W (75-110 GHz)",
+          englishTitle: "Mixer Frequency Limit Warning: M1971W",
           message: "外部波导混频器 M1971W 需要主机包含 Option 532 (32GHz) 或 544 (44GHz) 毫米波硬件支持。",
+          englishMessage: "External waveguide mixer M1971W requires Option 532 (32GHz) or 544 (44GHz).",
+          targetStepId: step1 ? step1.id : "step1",
           fixAction: {
             text: "调整频率至 Option 532",
+            englishText: "Adjust frequency to Option 532",
             actionType: "change_freq",
-            targetOptionId: "N9010B-532"
+            targetOptionId: fixOptId
           }
         });
       }

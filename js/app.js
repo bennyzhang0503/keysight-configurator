@@ -4,7 +4,7 @@ import { KEYSIGHT_INSTRUMENTS as DEFAULT_KEYSIGHT_INSTRUMENTS, LICENSE_TYPES, LI
 import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 
-export const APP_VERSION = "v2.2.2";
+export const APP_VERSION = "v2.2.3";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -461,6 +461,16 @@ class ConfiguratorApp {
           return;
         }
 
+        const returnBtn = e.target.closest("[data-action='return-step']");
+        if (returnBtn) {
+          if (this.previousStepId) {
+            const target = this.previousStepId;
+            this.previousStepId = null;
+            this.setCurrentStep(target);
+          }
+          return;
+        }
+
         const detailBtn = e.target.closest("[data-action='detail']");
         if (detailBtn) {
           e.stopPropagation();
@@ -496,7 +506,7 @@ class ConfiguratorApp {
       });
     }
 
-    // 4. Alert Autofix Delegation
+    // 4. Alert Autofix Delegation & Navigation
     if (this.dom.alertContainer) {
       this.dom.alertContainer.addEventListener("click", (e) => {
         const fixBtn = e.target.closest("[data-action='autofix']");
@@ -504,6 +514,12 @@ class ConfiguratorApp {
           const actionType = fixBtn.getAttribute("data-fix-type");
           const optionId = fixBtn.getAttribute("data-fix-opt");
           this.handleAutoFix(actionType, optionId);
+        }
+
+        const gotoBtn = e.target.closest("[data-action='goto-step']");
+        if (gotoBtn) {
+          const targetStepId = gotoBtn.getAttribute("data-step-id");
+          this.setCurrentStep(targetStepId);
         }
       });
     }
@@ -1239,9 +1255,16 @@ class ConfiguratorApp {
     }
   }
 
-  setCurrentStep(stepId) {
-    this.currentStepId = stepId;
-    this.render();
+  setCurrentStep(stepId, preserveSearch = false) {
+    if (this.currentStepId !== stepId) {
+      this.previousStepId = this.currentStepId;
+      this.currentStepId = stepId;
+      if (!preserveSearch) {
+        this.searchQuery = "";
+        if (this.dom.searchInput) this.dom.searchInput.value = "";
+      }
+      this.render();
+    }
   }
 
   renderAlerts() {
@@ -1260,6 +1283,9 @@ class ConfiguratorApp {
       const alertTitle = isEn ? (a.englishTitle || a.title) : a.title;
       const alertMsg = isEn ? (a.englishMessage || a.message) : a.message;
       const fixText = a.fixAction ? (isEn ? (a.fixAction.englishText || a.fixAction.text) : a.fixAction.text) : "";
+      
+      const targetStepObj = a.targetStepId ? this.currentInstrument.steps.find(s => s.id === a.targetStepId) : null;
+      const showGotoBtn = a.targetStepId && this.currentStepId !== a.targetStepId;
 
       return `
         <div class="alert-banner alert-${a.type}">
@@ -1270,11 +1296,18 @@ class ConfiguratorApp {
               <div>${alertMsg}</div>
             </div>
           </div>
-          ${a.fixAction ? `
-            <button class="alert-fix-btn" data-action="autofix" data-fix-type="${a.fixAction.actionType}" data-fix-opt="${a.fixAction.targetOptionId || a.fixAction.optionId}">
-              ⚡ ${fixText}
-            </button>
-          ` : ''}
+          <div style="display: flex; gap: 6px; align-items: center;">
+            ${showGotoBtn ? `
+              <button class="alert-fix-btn" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5);" data-action="goto-step" data-step-id="${a.targetStepId}">
+                📍 ${isEn ? `Go to Step ${targetStepObj ? targetStepObj.stepNumber : ''}` : `跳转至 Step ${targetStepObj ? targetStepObj.stepNumber : ''} 选择`}
+              </button>
+            ` : ''}
+            ${a.fixAction ? `
+              <button class="alert-fix-btn" data-action="autofix" data-fix-type="${a.fixAction.actionType}" data-fix-opt="${a.fixAction.targetOptionId || a.fixAction.optionId}">
+                ⚡ ${fixText}
+              </button>
+            ` : ''}
+          </div>
         </div>
       `;
     }).join("");
@@ -1364,7 +1397,19 @@ class ConfiguratorApp {
     const stepTitle = isEn ? (step.englishTitle || step.title) : step.title;
     const stepSubtitle = isEn ? (step.englishSubtitle || step.subtitle) : step.subtitle;
 
+    const prevStepObj = this.previousStepId ? this.currentInstrument.steps.find(s => s.id === this.previousStepId) : null;
+    const showReturnBar = prevStepObj && this.previousStepId !== this.currentStepId;
+
     this.dom.stepContent.innerHTML = `
+      ${showReturnBar ? `
+        <div class="return-step-banner" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+          <span>💡 ${isEn ? `Finished selecting? You can return to Step ${prevStepObj.stepNumber}.` : `已在当前步骤完成选择？可一键返回刚才的 Step ${prevStepObj.stepNumber} (${prevStepObj.title})`}</span>
+          <button class="btn btn-ghost" style="background: #2563eb; color: #fff; font-weight: 600; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;" data-action="return-step">
+            ↩️ ${isEn ? `Return to Step ${prevStepObj.stepNumber}` : `一键返回 Step ${prevStepObj.stepNumber}`}
+          </button>
+        </div>
+      ` : ''}
+
       <div class="step-header-box">
         <h3>Step ${step.stepNumber}. ${stepTitle}</h3>
         <p>${stepSubtitle}</p>
@@ -1507,8 +1552,10 @@ function initApp() {
   window.app = new ConfiguratorApp();
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initApp);
-} else {
-  initApp();
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+  } else {
+    initApp();
+  }
 }
