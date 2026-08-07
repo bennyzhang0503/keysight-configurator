@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.9";
+export const APP_VERSION = "v2.3.0";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -141,6 +141,13 @@ class ConfiguratorApp {
 
   loadInstrumentsDataFromStorage() {
     try {
+      const savedVersion = localStorage.getItem("ks_data_version");
+      if (savedVersion !== APP_VERSION) {
+        localStorage.removeItem("ks_instrument_data_v1");
+        localStorage.setItem("ks_data_version", APP_VERSION);
+        return JSON.parse(JSON.stringify(DEFAULT_KEYSIGHT_INSTRUMENTS));
+      }
+
       const saved = localStorage.getItem("ks_instrument_data_v1");
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -155,9 +162,11 @@ class ConfiguratorApp {
               uniqueMap.set(defInst.id, JSON.parse(JSON.stringify(defInst)));
             } else {
               const existing = uniqueMap.get(defInst.id);
+              const defSteps = defInst.steps ? defInst.steps.length : 0;
+              const existSteps = existing.steps ? existing.steps.length : 0;
               const defOpts = defInst.steps ? defInst.steps.reduce((acc, s) => acc + s.options.length, 0) : 0;
               const existOpts = existing.steps ? existing.steps.reduce((acc, s) => acc + s.options.length, 0) : 0;
-              if (defOpts > existOpts) {
+              if (defSteps > existSteps || defOpts > existOpts) {
                 uniqueMap.set(defInst.id, JSON.parse(JSON.stringify(defInst)));
               }
             }
