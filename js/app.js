@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.3.0";
+export const APP_VERSION = "v2.3.1";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -158,17 +158,9 @@ class ConfiguratorApp {
           });
 
           DEFAULT_KEYSIGHT_INSTRUMENTS.forEach(defInst => {
-            if (!uniqueMap.has(defInst.id)) {
+            const existing = uniqueMap.get(defInst.id);
+            if (!existing || !existing.steps || existing.steps.length !== defInst.steps.length || defInst.id === "M9415A" || defInst.id === "M9415B") {
               uniqueMap.set(defInst.id, JSON.parse(JSON.stringify(defInst)));
-            } else {
-              const existing = uniqueMap.get(defInst.id);
-              const defSteps = defInst.steps ? defInst.steps.length : 0;
-              const existSteps = existing.steps ? existing.steps.length : 0;
-              const defOpts = defInst.steps ? defInst.steps.reduce((acc, s) => acc + s.options.length, 0) : 0;
-              const existOpts = existing.steps ? existing.steps.reduce((acc, s) => acc + s.options.length, 0) : 0;
-              if (defSteps > existSteps || defOpts > existOpts) {
-                uniqueMap.set(defInst.id, JSON.parse(JSON.stringify(defInst)));
-              }
             }
           });
           return Array.from(uniqueMap.values());
@@ -176,6 +168,15 @@ class ConfiguratorApp {
       }
     } catch(e) {}
     return JSON.parse(JSON.stringify(DEFAULT_KEYSIGHT_INSTRUMENTS));
+  }
+
+  resetInstrumentsDataToDefault() {
+    try {
+      localStorage.removeItem("ks_instrument_data_v1");
+      localStorage.setItem("ks_data_version", APP_VERSION);
+    } catch(e) {}
+    this.instrumentsData = JSON.parse(JSON.stringify(DEFAULT_KEYSIGHT_INSTRUMENTS));
+    this.render();
   }
 
   saveInstrumentsDataToStorage() {
