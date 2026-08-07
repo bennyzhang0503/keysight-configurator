@@ -4,7 +4,7 @@ import { KEYSIGHT_INSTRUMENTS as DEFAULT_KEYSIGHT_INSTRUMENTS, LICENSE_TYPES, LI
 import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 
-export const APP_VERSION = "v2.2.3";
+export const APP_VERSION = "v2.2.4";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -1422,19 +1422,22 @@ class ConfiguratorApp {
   }
 
   renderLicenseSelectBox(optionId) {
-    const currentLic = this.selectedLicenses[optionId] || { licenseType: "Node-locked", licenseTerm: "Perpetual" };
+    const currentLic = this.selectedLicenses[optionId] || { licenseType: "NODE_LOCKED", licenseTerm: "PERPETUAL" };
     const isEn = this.currentLang === "en";
     
+    const types = Array.isArray(LICENSE_TYPES) ? LICENSE_TYPES : Object.values(LICENSE_TYPES);
+    const terms = Array.isArray(LICENSE_TERMS) ? LICENSE_TERMS : Object.values(LICENSE_TERMS);
+
     return `
       <div class="license-select-box">
         <label>🔑 ${isEn ? "License Type:" : "选件授权类型 (License Type):"}</label>
         <select data-lic-opt-id="${optionId}" data-lic-key="licenseType">
-          ${LICENSE_TYPES.map(lt => `<option value="${lt.id}" ${currentLic.licenseType === lt.id ? 'selected' : ''}>${isEn ? lt.id : lt.name}</option>`).join("")}
+          ${types.map(lt => `<option value="${lt.id}" ${currentLic.licenseType === lt.id ? 'selected' : ''}>${isEn ? (lt.englishName || lt.name) : lt.name}</option>`).join("")}
         </select>
 
         <label style="margin-top: 4px;">📅 ${isEn ? "License Term:" : "授权期限 (License Term):"}</label>
         <select data-lic-opt-id="${optionId}" data-lic-key="licenseTerm">
-          ${LICENSE_TERMS.map(lt => `<option value="${lt.id}" ${currentLic.licenseTerm === lt.id ? 'selected' : ''}>${isEn ? lt.id : lt.name}</option>`).join("")}
+          ${terms.map(lt => `<option value="${lt.id}" ${currentLic.licenseTerm === lt.id ? 'selected' : ''}>${isEn ? (lt.englishName || lt.name) : lt.name}</option>`).join("")}
         </select>
       </div>
     `;
