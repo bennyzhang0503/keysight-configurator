@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.6";
+export const APP_VERSION = "v2.2.7";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -1120,30 +1120,57 @@ class ConfiguratorApp {
 
     if (!step || !targetOpt) return;
 
-    if (targetOpt.isStandard) {
-      if (!this.selectedOptionIds.includes(optionId)) {
-        this.selectedOptionIds.push(optionId);
-        this.render();
-      }
-      return;
-    }
-
+    const standardOpt = step.options.find(o => o.isStandard);
     const isAlreadySelected = this.selectedOptionIds.includes(optionId);
     const isSingleChoice = step.type === "single";
 
+    if (targetOpt.isStandard) {
+      // User explicitly clicked factory standard option card
+      // Deselect all non-standard upgrade options in this step, and restore factory standard
+      step.options.forEach(opt => {
+        if (!opt.isStandard) {
+          const idx = this.selectedOptionIds.indexOf(opt.id);
+          if (idx > -1) this.selectedOptionIds.splice(idx, 1);
+        }
+      });
+      if (!this.selectedOptionIds.includes(optionId)) {
+        this.selectedOptionIds.push(optionId);
+      }
+      logger.action("TOGGLE_OPTION", `Restored standard option ${optionId} in step ${step.id}`);
+      this.render();
+      return;
+    }
+
+    // Target option is a non-standard upgrade option
     if (isAlreadySelected) {
+      // Deselect target upgrade option
       const idx = this.selectedOptionIds.indexOf(optionId);
       if (idx > -1) {
         this.selectedOptionIds.splice(idx, 1);
       }
+      // Check if any non-standard upgrade option remains in this step
+      const hasOtherNonStandard = step.options.some(o => !o.isStandard && this.selectedOptionIds.includes(o.id));
+      if (!hasOtherNonStandard && standardOpt) {
+        // Automatically default back to factory standard option
+        if (!this.selectedOptionIds.includes(standardOpt.id)) {
+          this.selectedOptionIds.push(standardOpt.id);
+        }
+      }
     } else {
+      // Select target upgrade option
       if (isSingleChoice) {
+        // Single-choice step: clear other non-standard upgrade options in this step
         step.options.forEach(opt => {
           if (!opt.isStandard) {
             const idx = this.selectedOptionIds.indexOf(opt.id);
             if (idx > -1) this.selectedOptionIds.splice(idx, 1);
           }
         });
+      }
+      // Automatically supersede/unselect the factory standard option in this step
+      if (standardOpt) {
+        const stdIdx = this.selectedOptionIds.indexOf(standardOpt.id);
+        if (stdIdx > -1) this.selectedOptionIds.splice(stdIdx, 1);
       }
       this.selectedOptionIds.push(optionId);
     }
@@ -1153,19 +1180,37 @@ class ConfiguratorApp {
   }
 
   removeOption(optionId) {
+    let step = null;
     let targetOpt = null;
     this.currentInstrument.steps.forEach(s => {
       const found = s.options.find(o => o.id === optionId);
-      if (found) targetOpt = found;
+      if (found) {
+        step = s;
+        targetOpt = found;
+      }
     });
 
-    if (targetOpt && targetOpt.isStandard) {
+    if (!targetOpt) return;
+
+    if (targetOpt.isStandard) {
       return;
     }
 
     const idx = this.selectedOptionIds.indexOf(optionId);
     if (idx > -1) {
       this.selectedOptionIds.splice(idx, 1);
+
+      if (step) {
+        const standardOpt = step.options.find(o => o.isStandard);
+        const hasOtherNonStandard = step.options.some(o => !o.isStandard && this.selectedOptionIds.includes(o.id));
+        if (!hasOtherNonStandard && standardOpt) {
+          if (!this.selectedOptionIds.includes(standardOpt.id)) {
+            this.selectedOptionIds.push(standardOpt.id);
+          }
+        }
+      }
+
+      logger.action("REMOVE_OPTION", `Removed option ${optionId} via drawer`);
       this.render();
     }
   }
@@ -1421,24 +1466,26 @@ class ConfiguratorApp {
 
     const optionsHtml = optionsToShow.map(opt => {
       const isSelected = this.selectedOptionIds.includes(opt.id);
-      const isLocked = opt.isStandard;
+      const isStandardOpt = opt.isStandard;
       const isRecommended = this.recommendedOptionIds.includes(opt.id);
 
       const optName = isEn ? (opt.englishName || opt.name) : opt.name;
       const optDesc = isEn ? (opt.englishDescription || opt.description) : opt.description;
-      const priceText = isLocked ? t.standardPrice : (opt.priceEstimate || 'Standard');
+      const priceText = isStandardOpt ? t.standardPrice : (opt.priceEstimate || 'Standard');
+      
+      const standardBadgeText = isStandardOpt ? (isSelected ? (isEn ? "🔒 Standard (Included)" : "🔒 出厂标配 (出厂包含)") : (isEn ? "🔒 Standard (Superseded)" : "🔒 出厂标配 (已由升级替代)")) : "";
 
       return `
-        <div class="option-card ${isSelected ? 'selected' : ''} ${isLocked ? 'standard locked' : ''} ${isRecommended ? 'recommended' : ''}"
+        <div class="option-card ${isSelected ? 'selected' : ''} ${isStandardOpt ? (isSelected ? 'standard locked' : 'standard-superseded') : ''} ${isRecommended ? 'recommended' : ''}"
              data-opt-id="${opt.id}">
           <div>
             <div class="card-top">
               <span class="opt-code-tag">${opt.code}</span>
               <div style="display: flex; gap: 4px; align-items: center;">
                 ${isRecommended ? `<span class="opt-recommended-badge">${t.recommendedTag}</span>` : ''}
-                ${isLocked ? `<span class="opt-standard-badge">${t.standardTag}</span>` : ''}
+                ${isStandardOpt ? `<span class="opt-standard-badge" style="${!isSelected ? 'opacity: 0.65; background: #334155;' : ''}">${standardBadgeText}</span>` : ''}
               </div>
-              <div class="checkbox-custom ${isLocked ? 'locked' : ''}">
+              <div class="checkbox-custom">
                 ${isSelected ? '<i data-lucide="check" style="width: 14px; height: 14px;"></i>' : ''}
               </div>
             </div>
