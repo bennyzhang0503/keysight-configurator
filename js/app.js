@@ -3,8 +3,9 @@
 import { KEYSIGHT_INSTRUMENTS as DEFAULT_KEYSIGHT_INSTRUMENTS, LICENSE_TYPES, LICENSE_TERMS } from './data/index.js';
 import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
+import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.4";
+export const APP_VERSION = "v2.2.5";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -55,6 +56,8 @@ const I18N = {
     loginNotice: "进入后台维护需验证管理员密码（默认初始密码: <strong>admin</strong>）：",
     loginBtn: "验证并登录",
     pwdError: "密码错误，请重新输入！",
+    loggerBtn: "调试日志",
+    loggerTitle: "📋 操作运行与调试日志 (Operation & Debug Logs)",
     standardItems: [
       "物理频谱分析应用软件标准版",
       "四核高性能处理器 / 16 GB RAM",
@@ -132,6 +135,7 @@ class ConfiguratorApp {
     this.initDOM();
     this.loadDefaultPresets();
     this.bindEvents();
+    logger.info("APP_INIT", `Keysight Configurator initialized ${APP_VERSION}`);
     this.render();
   }
 
@@ -258,6 +262,16 @@ class ConfiguratorApp {
       editOptCancelBtn: document.getElementById("editOptCancelBtn"),
       editOptSaveBtn: document.getElementById("editOptSaveBtn"),
 
+      // Logger DOMs
+      loggerBtn: document.getElementById("loggerBtn"),
+      loggerModal: document.getElementById("loggerModal"),
+      loggerCloseBtn: document.getElementById("loggerCloseBtn"),
+      loggerConsole: document.getElementById("loggerConsole"),
+      clearLogsBtn: document.getElementById("clearLogsBtn"),
+      exportLogsBtn: document.getElementById("exportLogsBtn"),
+      txtLoggerModalTitle: document.getElementById("txtLoggerModalTitle"),
+      txtLogger: document.getElementById("txtLogger"),
+
       // Lang Switcher Buttons
       langZhBtn: document.getElementById("langZhBtn"),
       langEnBtn: document.getElementById("langEnBtn"),
@@ -327,6 +341,36 @@ class ConfiguratorApp {
   }
 
   bindEvents() {
+    // Logger Modal Events
+    if (this.dom.loggerBtn) {
+      this.dom.loggerBtn.addEventListener("click", () => this.openLoggerModal());
+    }
+    if (this.dom.loggerCloseBtn && this.dom.loggerModal) {
+      this.dom.loggerCloseBtn.addEventListener("click", () => {
+        this.dom.loggerModal.style.display = "none";
+      });
+    }
+    if (this.dom.clearLogsBtn) {
+      this.dom.clearLogsBtn.addEventListener("click", () => {
+        logger.clearLogs();
+        this.renderLoggerConsole();
+      });
+    }
+    if (this.dom.exportLogsBtn) {
+      this.dom.exportLogsBtn.addEventListener("click", () => {
+        logger.action("EXPORT_LOG", "User clicked export logs");
+        logger.exportLogsAsText({
+          version: APP_VERSION,
+          currentInstrument: this.currentInstrument,
+          currentStepId: this.currentStepId,
+          previousStepId: this.previousStepId,
+          searchQuery: this.searchQuery,
+          selectedOptionIds: this.selectedOptionIds,
+          selectedLicenses: this.selectedLicenses
+        });
+      });
+    }
+
     // Language Switcher Events
     if (this.dom.langZhBtn && this.dom.langEnBtn) {
       this.dom.langZhBtn.addEventListener("click", () => this.switchLanguage("zh"));
@@ -537,6 +581,7 @@ class ConfiguratorApp {
       this.dom.modelSelect.addEventListener("change", (e) => {
         const selected = this.instrumentsData.find(i => i.id === e.target.value);
         if (selected) {
+          logger.action("SWITCH_MODEL", `Switched instrument to ${selected.name} (${selected.id})`);
           this.currentInstrument = selected;
           this.currentStepId = selected.steps && selected.steps[0] ? selected.steps[0].id : "step1";
           this.loadDefaultPresets();
@@ -1102,6 +1147,7 @@ class ConfiguratorApp {
       this.selectedOptionIds.push(optionId);
     }
 
+    logger.action("TOGGLE_OPTION", `Toggled option ${optionId} in step ${step.id}. Selected: ${this.selectedOptionIds.includes(optionId)}`);
     this.render();
   }
 
@@ -1257,6 +1303,7 @@ class ConfiguratorApp {
 
   setCurrentStep(stepId, preserveSearch = false) {
     if (this.currentStepId !== stepId) {
+      logger.action("NAVIGATE_STEP", `Navigated from ${this.currentStepId} to ${stepId}`);
       this.previousStepId = this.currentStepId;
       this.currentStepId = stepId;
       if (!preserveSearch) {
@@ -1314,6 +1361,7 @@ class ConfiguratorApp {
   }
 
   handleAutoFix(actionType, optionId) {
+    logger.action("AUTO_FIX", `Applied autofix ${actionType} for option ${optionId}`);
     if (actionType === "add_option" || actionType === "change_freq") {
       if (!this.selectedOptionIds.includes(optionId)) {
         if (actionType === "change_freq") {
@@ -1445,9 +1493,10 @@ class ConfiguratorApp {
 
   updateLicense(optionId, key, val) {
     if (!this.selectedLicenses[optionId]) {
-      this.selectedLicenses[optionId] = { licenseType: "Node-locked", licenseTerm: "Perpetual" };
+      this.selectedLicenses[optionId] = { licenseType: "NODE_LOCKED", licenseTerm: "PERPETUAL" };
     }
     this.selectedLicenses[optionId][key] = val;
+    logger.action("UPDATE_LICENSE", `Updated license for ${optionId}: ${key} = ${val}`);
     this.render();
   }
 
@@ -1543,6 +1592,34 @@ class ConfiguratorApp {
     };
 
     this.dom.optionModal.style.display = "flex";
+  }
+
+  openLoggerModal() {
+    this.renderLoggerConsole();
+    if (this.dom.loggerModal) this.dom.loggerModal.style.display = "flex";
+  }
+
+  renderLoggerConsole() {
+    if (!this.dom.loggerConsole) return;
+    const logs = logger.getLogs();
+    if (logs.length === 0) {
+      this.dom.loggerConsole.innerText = "暂无日志记录 (No log entries recorded yet)";
+      return;
+    }
+
+    const html = logs.map((l, i) => {
+      let color = "#38bdf8"; // INFO blue
+      if (l.level === "WARN") color = "#fbbf24";
+      if (l.level === "ERROR") color = "#f87171";
+      if (l.level === "ACTION") color = "#34d399";
+
+      const extraStr = l.extraData ? `
+   └─ Data: ${JSON.stringify(l.extraData)}` : '';
+      return `<div style="color: ${color}; margin-bottom: 4px;">#${String(i + 1).padStart(3, '0')} [${l.localTime}] [${l.level}] [${l.category}] ${l.message}${extraStr}</div>`;
+    }).join("");
+
+    this.dom.loggerConsole.innerHTML = html;
+    this.dom.loggerConsole.scrollTop = this.dom.loggerConsole.scrollHeight;
   }
 }
 
