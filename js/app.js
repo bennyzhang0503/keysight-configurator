@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.8";
+export const APP_VERSION = "v2.2.9";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference

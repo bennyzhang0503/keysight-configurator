@@ -1,649 +1,430 @@
-// Keysight M9415B Configurator Dataset
+// Keysight M9415B Configurator Dataset (Official Sections A-F)
 export const M9415B_DATA = {
   "id": "M9415B",
-  "name": "M9415B VXT PXIe Vector Transceiver (with Analog BBIQ)",
-  "subtitle": "380 MHz to 20 GHz PXIe Vector Transceiver with 1.2 GHz Bandwidth & Analog BBIQ",
-  "family": "PXIe Vector Transceivers (VXT-B Series)",
-  "docNumber": "5992-1261 / M9415B",
-  "description": "The Keysight M9415B VXT is a 4-slot PXIe Vector Transceiver integrating a vector signal generator (VSG), vector signal analyzer (VSA), and Analog Baseband I/Q (Analog BBIQ) ports from 380 MHz up to 20 GHz with up to 1.2 GHz bandwidth for 5G NR, Wi-Fi 7, and baseband IC testing.",
+  "name": "M9415B VXT PXIe Vector Transceiver",
+  "subtitle": "330 MHz to 20 GHz RF Transceiver & 1.2 GHz Analysis Bandwidth",
+  "family": "PXI Modular Vector Transceivers",
+  "docNumber": "5992-3126 / M9415B",
+  "description": "The Keysight M9415B VXT PXIe vector transceiver is a compact multi-functional PXI solution for RF and baseband I/Q (BBIQ) signal analysis up to 20 GHz with up to 1.2 GHz bandwidth.",
   "baseSpecs": {
-    "formFactor": "4-slot 3U PXIe Module",
-    "frequencyRange": "380 MHz to 8.5 / 13.6 / 20 GHz",
-    "analogBbiq": "Integrated Differential & Single-Ended Analog Baseband I/Q Inputs & Outputs (BBIQ)",
-    "vsgVsaIntegration": "Integrated Vector Signal Generator (VSG) & Vector Signal Analyzer (VSA)",
-    "maxBandwidth": "Up to 1.2 GHz Modulation & Analysis Bandwidth (Option B12)",
-    "maxOutputPower": "High output power up to +20 dBm (Option 1EA)"
+    "display": "PXI Modular Architecture (Requires PXIe Chassis & Controller)",
+    "frequency": "330 MHz to 8.5 GHz (Standard Option F08)",
+    "bandwidth": "400 MHz Modulation & Analysis Bandwidth (Standard Option B4X)",
+    "memory": "256 MSa Waveform Playback Memory (Standard Option M02)",
+    "os": "Microsoft Windows 11 IoT Enterprise LTSC (64-bit)"
   },
   "steps": [
     {
       "id": "step1",
       "stepNumber": 1,
-      "title": "选择最高工作频率范围 (Select Maximum Frequency Range - Required Option)",
-      "englishTitle": "Select Maximum Frequency Range",
-      "subtitle": "必选选件（3 选 1），支持 380 MHz 至 8.5 GHz、13.6 GHz 及 20 GHz 覆盖",
-      "englishSubtitle": "Required option (Choose 1). Frequency range from 380 MHz up to 20 GHz.",
+      "title": "A.1 & A.2 选择核心模块与频率范围 (Choose Transceiver Module & Frequency Range)",
+      "englishTitle": "Section A: Transceiver Module & Frequency Range",
+      "subtitle": "决定模块核心功能与最高工作频率上限",
+      "englishSubtitle": "Determines core transceiver capabilities and maximum RF frequency range.",
       "type": "single",
       "options": [
         {
+          "id": "M9415B-001",
+          "code": "M9415B-001",
+          "name": "VXT PXIe 矢量收发信机核心模块 (Analog BBIQ)",
+          "englishName": "VXT PXIe Vector Transceiver with Analog BBIQ",
+          "category": "Transceiver Module",
+          "priceEstimate": "$48,500",
+          "description": "提供矢量信号发生与矢量信号分析双向 RF 及模拟 BBIQ 输入输出接口。"
+        },
+        {
           "id": "M9415B-F08",
           "code": "M9415B-F08",
-          "name": "频率范围 380 MHz 至 8.5 GHz",
-          "englishName": "Frequency range, 380 MHz to 8.5 GHz",
+          "name": "频率范围 330 MHz 至 8.5 GHz (出厂标配)",
+          "englishName": "Frequency range, 330 MHz to 8.5 GHz",
           "category": "Frequency",
-          "priceEstimate": "$48,500",
+          "isStandard": true,
+          "priceEstimate": "Standard",
           "freqMaxGHz": 8.5,
-          "description": "覆盖 5G NR FR1、LTE 及 Wi-Fi 6E/7 (U-NII-1 至 U-NII-8) 通信频段。",
-          "englishDescription": "Covers Sub-6GHz frequency range for 5G FR1 and Wi-Fi 7."
+          "description": "覆盖 8.5 GHz 以下 Sub-6GHz 5G NR、Wi-Fi 6E/7 与通用 RF 射频测试。"
         },
         {
           "id": "M9415B-F13",
           "code": "M9415B-F13",
-          "name": "频率范围 380 MHz 至 13.6 GHz",
-          "englishName": "Frequency range, 380 MHz to 13.6 GHz",
+          "name": "频率范围 330 MHz 至 13.5 GHz (Option F13)",
+          "englishName": "Frequency range, 330 MHz to 13.5 GHz",
           "category": "Frequency",
-          "priceEstimate": "$62,000",
-          "freqMaxGHz": 13.6,
-          "description": "扩展覆盖至 13.6 GHz，适合 X 波段雷达与微波通信测试。",
-          "englishDescription": "Extends frequency range up to 13.6 GHz for microwave testing."
+          "priceEstimate": "+$9,800",
+          "freqMaxGHz": 13.5,
+          "description": "扩展测试上限至 13.5 GHz，覆盖 X 波段雷达与卫星通信中频测试。"
         },
         {
           "id": "M9415B-F20",
           "code": "M9415B-F20",
-          "name": "频率范围 380 MHz 至 20 GHz",
-          "englishName": "Frequency range, 380 MHz to 20 GHz",
+          "name": "频率范围 330 MHz 至 20 GHz (Option F20)",
+          "englishName": "Frequency range, 330 MHz to 20 GHz",
           "category": "Frequency",
-          "priceEstimate": "+$78,000",
+          "priceEstimate": "+$18,500",
           "freqMaxGHz": 20.0,
-          "description": "M9415B 专属全频段覆盖至 20 GHz，满足 K 波段、毫米波基带与微波射频收发一体化测试。",
-          "englishDescription": "M9415B exclusive full frequency coverage up to 20 GHz."
+          "description": "全频段覆盖 20 GHz，满足 K/Ku 波段微波通信与 5G 毫米波上变频测试。"
         }
       ]
     },
     {
       "id": "step2",
       "stepNumber": 2,
-      "title": "选择矢量调制生成与解调分析带宽 (Select Modulation & Analysis Bandwidth)",
-      "englishTitle": "Select Modulation & Analysis Bandwidth",
-      "subtitle": "提供高达 1.2 GHz 超宽带 RF 与模拟 BBIQ 矢量生成与分析能力 (Option B12)",
-      "englishSubtitle": "Provides up to 1.2 GHz ultra-wideband modulation & analysis bandwidth.",
+      "title": "A.3 选择矢量调制与解调分析带宽 (Choose Modulation & Analysis Bandwidth)",
+      "englishTitle": "Section A.3: Choose Modulation & Analysis Bandwidth",
+      "subtitle": "决定宽带调制信号生成与实时解调带宽上限",
+      "englishSubtitle": "Determines wideband signal generation and real-time demodulation bandwidth.",
       "type": "single",
       "options": [
         {
           "id": "M9415B-B4X",
           "code": "M9415B-B4X",
-          "name": "400 MHz 矢量生成与解调分析带宽 (400 MHz Bandwidth)",
-          "englishName": "400 MHz modulation and analysis bandwidth",
+          "name": "400 MHz 矢量调制与分析带宽 (出厂标配)",
+          "englishName": "400 MHz modulation & analysis bandwidth",
           "category": "Bandwidth",
-          "priceEstimate": "Standard",
           "isStandard": true,
           "bandwidthMHz": 400,
-          "description": "M9415B 标配 400 MHz RF 与模拟 BBIQ 矢量生成解调带宽。",
-          "englishDescription": "Standard 400 MHz RF & BBIQ modulation and analysis bandwidth."
+          "priceEstimate": "Standard",
+          "description": "出厂标配 400 MHz 宽带 RF 与 BBIQ 信号调制与解调带宽。"
         },
         {
           "id": "M9415B-B8X",
           "code": "M9415B-B8X",
-          "name": "800 MHz 矢量生成与解调分析带宽 (800 MHz Bandwidth)",
-          "englishName": "800 MHz modulation and analysis bandwidth",
+          "name": "800 MHz 矢量调制与分析带宽 (800 MHz Bandwidth)",
+          "englishName": "800 MHz modulation & analysis bandwidth",
           "category": "Bandwidth",
-          "priceEstimate": "+$21,500",
           "bandwidthMHz": 800,
-          "description": "扩展带宽至 800 MHz，轻松满足多载波 5G NR 及 Wi-Fi 7 320 MHz 宽带测试。",
-          "englishDescription": "Extends bandwidth to 800 MHz for multi-carrier 5G NR and Wi-Fi 7."
+          "priceEstimate": "+$14,500",
+          "description": "扩展矢量信号发生与分析带宽至 800 MHz，支持多载波测试。"
         },
         {
           "id": "M9415B-B12",
           "code": "M9415B-B12",
-          "name": "1.2 GHz 极致超宽矢量生成与解调带宽 (1.2 GHz Ultra-Wideband)",
-          "englishName": "1.2 GHz modulation and analysis bandwidth",
+          "name": "1.2 GHz 矢量调制与分析带宽 (1.2 GHz Bandwidth)",
+          "englishName": "1.2 GHz modulation & analysis bandwidth",
           "category": "Bandwidth",
-          "priceEstimate": "+$36,000",
           "bandwidthMHz": 1200,
-          "description": "VXT 旗舰 1.2 GHz 极致超宽 RF 与模拟 I/Q 矢量生成与分析带宽。",
-          "englishDescription": "VXT flagship 1.2 GHz ultra-wideband modulation and analysis bandwidth."
+          "priceEstimate": "+$21,000",
+          "description": "全频段超宽带 1.2 GHz 矢量收发带宽，轻松满足 5G NR 与 Wi-Fi 7/8 超大带宽。"
         }
       ]
     },
     {
       "id": "step3",
       "stepNumber": 3,
-      "title": "选择输出功率电平与半双工控制 (Output Power & Duplex Mode)",
-      "englishTitle": "Output Power & Duplex Mode",
-      "subtitle": "高输出功率选件 Option 1EA (高达 +20 dBm) 及半双工模式选件",
-      "englishSubtitle": "High output power up to +20 dBm (Option 1EA) and Half-duplex option.",
-      "type": "multiple",
+      "title": "A.4 选择波形回放深内存 (Choose Playback Memory Size)",
+      "englishTitle": "Section A.4: Choose Memory Size",
+      "subtitle": "决定长波形序列存储与复杂调制回放能力",
+      "englishSubtitle": "Determines arbitrary waveform sequence playback memory depth.",
+      "type": "single",
       "options": [
         {
-          "id": "M9415B-1EA",
-          "code": "M9415B-1EA",
-          "name": "高输出功率选件 (High Output Power up to +20 dBm)",
-          "englishName": "High output power",
-          "category": "Power",
-          "priceEstimate": "+$5,200",
-          "description": "提升矢量信号发生器输出功率电平至 +20 dBm，补偿线缆衰减与功放测试。",
-          "englishDescription": "Increases VSG output power up to +20 dBm."
+          "id": "M9415B-M02",
+          "code": "M9415B-M02",
+          "name": "256 MSa 存储深度 (出厂标配)",
+          "englishName": "Memory, 256 MSa",
+          "category": "Memory",
+          "isStandard": true,
+          "priceEstimate": "Standard",
+          "description": "出厂标配 256 MSa ARB 任意波形回放内存。"
         },
         {
-          "id": "M9415B-001",
-          "code": "M9415B-001",
-          "name": "半双工模式切换控制 (Half-Duplex Mode Operation)",
-          "englishName": "Half-duplex operation",
-          "category": "Duplex",
-          "priceEstimate": "+$1,800",
-          "description": "支持高速度收发 TDD 半双工逻辑无缝切换。",
-          "englishDescription": "Enables high-speed TDD half-duplex switching."
+          "id": "M9415B-M05",
+          "code": "M9415B-M05",
+          "name": "512 MSa 高容量存储深度 (512 MSa Memory)",
+          "englishName": "Memory, 512 MSa",
+          "category": "Memory",
+          "priceEstimate": "+$5,200",
+          "description": "扩展波形存储器至 512 MSa，用于超长数据帧与复杂多载波回放。"
         }
       ]
     },
     {
       "id": "step4",
       "stepNumber": 4,
-      "title": "选择模拟 BBIQ、基带内存与调制扩展 (Analog BBIQ, Memory & Performance)",
-      "englishTitle": "Analog BBIQ, Memory & Performance",
-      "subtitle": "模拟 I/Q 输入输出接口、2 GB 内存、多设备调制解调与远程处理选件",
-      "englishSubtitle": "Analog Baseband I/Q (BBIQ) ports, 2 GB Baseband Memory, and Multi-device modem.",
+      "title": "A.5 选择额外硬件特性与输出功能 (Choose Additional Capabilities)",
+      "englishTitle": "Section A.5: Choose Additional Capabilities",
+      "subtitle": "高输出功率、5G 实时相位补偿与解调扩展",
+      "englishSubtitle": "High output power, 5G NR phase compensation and external modulation ports.",
       "type": "multiple",
       "options": [
         {
-          "id": "M9415B-M02",
-          "code": "M9415B-M02",
-          "name": "2 GB 深度基带波形存储器 (2 GB Baseband Memory)",
-          "englishName": "2 GB baseband memory",
-          "category": "Memory",
-          "priceEstimate": "+$5,800",
-          "description": "扩展波形播放与抓包内存至 2 GB，支持长时间 Complex IQ 信号生成与记录。",
-          "englishDescription": "Expands baseband waveform memory up to 2 GB."
-        },
-        {
-          "id": "M9415B-M05",
-          "code": "M9415B-M05",
-          "name": "512 MB 基带波形存储器 (512 MB Baseband Memory)",
-          "englishName": "512 MB baseband memory",
-          "category": "Memory",
-          "priceEstimate": "+$2,500",
-          "description": "基础 512 MB IQ 波形播放内存。",
-          "englishDescription": "Provides 512 MB baseband memory."
-        },
-        {
-          "id": "M9415B-MDM",
-          "code": "M9415B-MDM",
-          "name": "多设备 Modem 调制解调测试扩展包 (Multi-Device Modem)",
-          "englishName": "Multi-device modem",
-          "category": "Performance",
-          "priceEstimate": "+$6,500",
-          "description": "支持多基带 IC 芯片与 Modem 芯片并行验证测试。",
-          "englishDescription": "Supports parallel testing of multi-device modem ICs."
+          "id": "M9415B-1EA",
+          "code": "M9415B-1EA",
+          "name": "高输出功率选件 (High Output Power)",
+          "englishName": "High output power",
+          "category": "Capability",
+          "priceEstimate": "+$4,500",
+          "description": "提升信号源最大射频输出功率，满足功放 (PA) 非线性测试要求。"
         },
         {
           "id": "M9415B-RPC",
           "code": "M9415B-RPC",
-          "name": "远程处理控制与计算引擎选件 (Remote Processing Control)",
-          "englishName": "Remote processing control",
-          "category": "Performance",
+          "name": "5G NR 实时相位补偿选件 (5G NR Real-Time Phase Comp)",
+          "englishName": "5G NR real-time phase compensation",
+          "category": "Capability",
           "priceEstimate": "+$4,800",
-          "description": "提供远程并行 DSP 运算处理控制能力。",
-          "englishDescription": "Provides remote parallel DSP processing control."
+          "description": "提供 5G NR 上下行相位噪声实时补偿计算。"
+        },
+        {
+          "id": "M9415B-MDM",
+          "code": "M9415B-MDM",
+          "name": "外部调制输入与解调输出接口选件",
+          "englishName": "External modulation input and demodulation output",
+          "category": "Capability",
+          "priceEstimate": "+$3,200",
+          "description": "提供后面板模拟 IQ 外部输入与解调模拟输出硬件接口。"
         }
       ]
     },
     {
       "id": "step5",
       "stepNumber": 5,
-      "title": "选择 PXIe 机箱与嵌入式控制器 (Select PXIe Chassis & Controller)",
-      "englishTitle": "Select PXIe Chassis & Controller",
-      "subtitle": "选购 18 槽高带宽 PXIe 机箱 M9019A/M9046A 与高性能嵌入式控制器",
-      "englishSubtitle": "Choose 18-slot PXIe chassis M9019A/M9046A and Embedded Controller.",
+      "title": "B. 选配 M9300A PXIe 独立频率基准 (Add M9300A Frequency Reference)",
+      "englishTitle": "Section B: Add M9300A PXIe Frequency Reference",
+      "subtitle": "多模块同步必选高稳定度独立频率基准 (占用 1 槽位)",
+      "englishSubtitle": "High-stability timebase module for multi-module synchronization (Occupies 1 Slot).",
       "type": "multiple",
       "options": [
         {
-          "id": "M9019A",
-          "code": "M9019A",
-          "name": "M9019A 18 槽 Gen 3 PXIe 高带宽机箱 (18-Slot PXIe Chassis)",
-          "englishName": "Gen 3 PXIe 18-slot chassis",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$8,500",
-          "description": "提供 24 GB/s 系统总带宽与 18 个 PXIe 混合插槽。",
-          "englishDescription": "18-slot Gen 3 PXIe chassis with 24 GB/s system bandwidth."
+          "id": "M9300A",
+          "code": "M9300A",
+          "name": "M9300A PXIe 精密频率基准模块",
+          "englishName": "M9300A PXIe frequency reference",
+          "category": "Frequency Reference",
+          "priceEstimate": "+$5,200",
+          "description": "提供 5 路 100 MHz 输出及 1 路 10 MHz OCXO 高稳定度基准时钟输出。"
         },
         {
-          "id": "M9046A",
-          "code": "M9046A",
-          "name": "M9046A 18 槽 Gen 4 高性能光纤接口 PXIe 机箱",
-          "englishName": "Gen 4 PXIe 18-slot chassis with optical interface",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$12,500",
-          "description": "支持 Gen 4 PCIe 与光纤背板接口的极致带宽 PXIe 机箱。",
-          "englishDescription": "Gen 4 PXIe chassis with high-speed optical interface."
-        },
-        {
-          "id": "M9038A",
-          "code": "M9038A",
-          "name": "M9038A PXIe 顶级嵌入式控制器 (Intel Xeon)",
-          "englishName": "PXIe premier embedded controller",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$9,800",
-          "description": "Intel Xeon 服务器级多核处理器，专为极致计算与大内存并行处理设计。",
-          "englishDescription": "Intel Xeon premier PXIe embedded controller."
-        },
-        {
-          "id": "M9022A",
-          "code": "M9022A",
-          "name": "M9022A PXIe 系统模块 (System Module Gen 3 x8)",
-          "englishName": "PXIe system module Gen 3 x8",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$2,200",
-          "description": "连接外部 PC 主机的 PCIe 扩展接口模块。",
-          "englishDescription": "PCIe interface system module for external host PC."
-        },
-        {
-          "id": "M9023A",
-          "code": "M9023A",
-          "name": "M9023A PXIe 系统模块 (System Module Gen 3 x16)",
-          "englishName": "PXIe system module Gen 3 x16",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$3,500",
-          "description": "提供 Gen 3 x16 高达 16 GB/s 主机连接数据传输吞吐。",
-          "englishDescription": "Gen 3 x16 high-speed PCIe system module."
-        },
-        {
-          "id": "M9024A",
-          "code": "M9024A",
-          "name": "M9024A PXIe 高速多机箱互联扩展模块",
-          "englishName": "PXIe multi-chassis extension module",
-          "category": "PXIe Hardware",
-          "priceEstimate": "+$4,200",
-          "description": "实现多台 PXIe 机箱间高速数据与触发互联。",
-          "englishDescription": "Multi-chassis interconnect module for large PXIe systems."
+          "id": "M9300A-S01",
+          "code": "M9300A-S01",
+          "name": "M9300A 无出口许可证限制版基准选件",
+          "englishName": "M9300A Frequency Reference No Export License",
+          "category": "Frequency Reference",
+          "priceEstimate": "Standard",
+          "requires": ["M9300A"],
+          "description": "出厂符合全球无出口许可证限制标准的时钟配置。"
         }
       ]
     },
     {
       "id": "step6",
       "stepNumber": 6,
-      "title": "选择 5G NR 与蜂窝无线测量应用软件 (Cellular & 5G NR Measurement Apps)",
-      "englishTitle": "Cellular & 5G NR Measurement Apps",
-      "subtitle": "5G NR Sub-6GHz (E9085EM0E/Y9085EM0E)、LTE FDD/TDD 及 NB-IoT 测试套件",
-      "englishSubtitle": "5G NR, LTE FDD/TDD, and NB-IoT measurement software apps for VXT.",
-      "type": "multiple",
+      "title": "C. 选择 PXIe 控制器与操作系统 (Select Controller & OS)",
+      "englishTitle": "Section C: Select Controller & OS",
+      "subtitle": "嵌入式高性能 PXIe 主控板或外接 PC PCIe 接口卡",
+      "englishSubtitle": "Embedded PXIe controller modules or external PC PCIe host adapters.",
+      "type": "single",
       "options": [
         {
-          "id": "E9085EM0E",
-          "code": "E9085EM0E",
-          "name": "5G NR 测量应用软件 (固定许可证 Node-locked License)",
-          "englishName": "5G NR measurement app, Node-locked",
-          "category": "Measurement App",
-          "priceEstimate": "+$9,800",
-          "supportsLicense": true,
-          "description": "支持 5G NR 3GPP 下行与上行标准信号解调、EVM 及 ACPR 功率测量。",
-          "englishDescription": "Standard-based 5G NR measurement app."
+          "id": "M9035A-M16",
+          "code": "M9035A-M16",
+          "name": "M9035A i3-8100H 四核 PXIe 控制器 (16 GB RAM)",
+          "englishName": "M9035A Intel i3-8100H quad-core controller, 16 GB RAM",
+          "category": "Controller",
+          "priceEstimate": "+$6,800",
+          "description": "基础级四核嵌入式控制器，内置 16 GB 内存与 Windows 系统。"
         },
         {
-          "id": "Y9085EM0E",
-          "code": "Y9085EM0E",
-          "name": "5G NR 测量应用软件 (可漂移浮动许可证 Transportable License)",
-          "englishName": "5G NR measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$11,800",
-          "supportsLicense": true,
-          "description": "支持在不同 VXT 或 PXIe 模块间自由浮动转移共享许可证。",
-          "englishDescription": "Transportable license for 5G NR measurement app."
+          "id": "M9038A-M32",
+          "code": "M9038A-M32",
+          "name": "M9038A i7-9850HE 六核高性能控制器 (32 GB RAM, 雷电3)",
+          "englishName": "M9038A Intel i7-9850HE 6-core controller, 32 GB RAM",
+          "category": "Controller",
+          "priceEstimate": "+$11,500",
+          "description": "旗舰级六核嵌入式控制器，双雷电 3 接口与可拆卸 NVMe SSD。"
         },
         {
-          "id": "E9080EM0E",
-          "code": "E9080EM0E",
-          "name": "LTE/LTE-Advanced FDD 测量应用软件 (Node-locked)",
-          "englishName": "LTE/LTE-A FDD measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,200",
-          "supportsLicense": true,
-          "description": "LTE FDD 载波聚合信号标准解调与星座图分析。",
-          "englishDescription": "Standard-based LTE FDD measurement app."
-        },
-        {
-          "id": "Y9080EM0E",
-          "code": "Y9080EM0E",
-          "name": "LTE/LTE-Advanced FDD 测量应用软件 (Transportable)",
-          "englishName": "LTE/LTE-A FDD measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$6,500",
-          "supportsLicense": true,
-          "description": "可转移许可证 LTE FDD 测量分析软件。",
-          "englishDescription": "Transportable LTE FDD measurement app."
-        },
-        {
-          "id": "E9082EM0E",
-          "code": "E9082EM0E",
-          "name": "LTE/LTE-Advanced TDD 测量应用软件 (Node-locked)",
-          "englishName": "LTE/LTE-A TDD measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,200",
-          "supportsLicense": true,
-          "description": "LTE TDD 信号标准解调与分析。",
-          "englishDescription": "Standard-based LTE TDD measurement app."
-        },
-        {
-          "id": "Y9082EM0E",
-          "code": "Y9082EM0E",
-          "name": "LTE/LTE-Advanced TDD 测量应用软件 (Transportable)",
-          "englishName": "LTE/LTE-A TDD measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$6,500",
-          "supportsLicense": true,
-          "description": "可转移许可证 LTE TDD 测量软件。",
-          "englishDescription": "Transportable LTE TDD measurement app."
-        },
-        {
-          "id": "E9080EM3E",
-          "code": "E9080EM3E",
-          "name": "NB-IoT & eMTC 物联网测试软件 (Node-locked)",
-          "englishName": "NB-IoT & eMTC measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,200",
-          "supportsLicense": true,
-          "description": "窄带物联网物理层射频指标测试。",
-          "englishDescription": "NB-IoT and eMTC measurement app."
-        },
-        {
-          "id": "Y9080EM3E",
-          "code": "Y9080EM3E",
-          "name": "NB-IoT & eMTC 物联网测试软件 (Transportable)",
-          "englishName": "NB-IoT & eMTC measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,200",
-          "supportsLicense": true,
-          "description": "可转移许可证 NB-IoT 测量软件。",
-          "englishDescription": "Transportable NB-IoT measurement app."
-        },
-        {
-          "id": "E9080EM4E",
-          "code": "E9080EM4E",
-          "name": "LTE V2X 车联网测试软件 (Node-locked)",
-          "englishName": "LTE V2X measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,800",
-          "supportsLicense": true,
-          "description": "LTE V2X 直连通信射频特性解调与测量。",
-          "englishDescription": "LTE V2X measurement app."
-        },
-        {
-          "id": "Y9080EM4E",
-          "code": "Y9080EM4E",
-          "name": "LTE V2X 车联网测试软件 (Transportable)",
-          "englishName": "LTE V2X measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,800",
-          "supportsLicense": true,
-          "description": "可转移许可证 LTE V2X 测量软件。",
-          "englishDescription": "Transportable LTE V2X measurement app."
-        },
-        {
-          "id": "E9071EM0E",
-          "code": "E9071EM0E",
-          "name": "GSM/EDGE/Evo 蜂窝测试软件",
-          "englishName": "GSM/EDGE measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$3,800",
-          "supportsLicense": true,
-          "description": "2G GSM/EDGE 单键标准测试。",
-          "englishDescription": "GSM/EDGE measurement app."
-        },
-        {
-          "id": "Y9071EM0E",
-          "code": "Y9071EM0E",
-          "name": "GSM/EDGE/Evo 蜂窝测试软件 (Transportable)",
-          "englishName": "GSM/EDGE measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,500",
-          "supportsLicense": true,
-          "description": "可转移许可证 GSM/EDGE 测试软件。",
-          "englishDescription": "Transportable GSM/EDGE measurement app."
-        },
-        {
-          "id": "E9073EM0E",
-          "code": "E9073EM0E",
-          "name": "W-CDMA/HSPA+ 3G 蜂窝测试软件",
-          "englishName": "W-CDMA/HSPA+ measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,800",
-          "supportsLicense": true,
-          "description": "3G W-CDMA 单键解调与邻道功率测试。",
-          "englishDescription": "W-CDMA/HSPA+ measurement app."
-        },
-        {
-          "id": "Y9073EM0E",
-          "code": "Y9073EM0E",
-          "name": "W-CDMA/HSPA+ 3G 蜂窝测试软件 (Transportable)",
-          "englishName": "W-CDMA/HSPA+ measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,800",
-          "supportsLicense": true,
-          "description": "可转移许可证 3G W-CDMA 测试软件。",
-          "englishDescription": "Transportable W-CDMA measurement app."
+          "id": "M9048B",
+          "code": "M9048B",
+          "name": "M9048B PCIe 单口主机适配卡 (x8 Gen3, 外接 PC 方案)",
+          "englishName": "M9048B PCIe host adapter: Single port (x8), Gen 3",
+          "category": "External Controller",
+          "priceEstimate": "+$2,400",
+          "description": "通过 PCIe 光纤缆线连接台式工作站控制 PXIe 机箱。"
         }
       ]
     },
     {
       "id": "step7",
       "stepNumber": 7,
-      "title": "选择 WLAN Wi-Fi 7 与无线互联测量应用软件 (WLAN Wi-Fi 7 & Wireless Apps)",
-      "englishTitle": "WLAN Wi-Fi 7 & Wireless Apps",
-      "subtitle": "支持 Wi-Fi 7 320MHz 4096QAM (E9077EM2E/Y9077EM2E)、蓝牙 5 (E9081EM0E)",
-      "englishSubtitle": "WLAN 802.11ac/ax/be Wi-Fi 7 (320MHz), Bluetooth 5, and Short Range IoT.",
-      "type": "multiple",
+      "title": "D.1 & D.2 选择 PXIe 机箱与假面板 (Select Chassis & Filler Panels)",
+      "englishTitle": "Section D.1 & D.2: Select Chassis & Filler Panels",
+      "subtitle": "10 槽/18 槽高功耗 Gen3 机箱及槽位风道阻挡件",
+      "englishSubtitle": "10-slot / 18-slot Gen3 PXIe chassis and slot blocker EMC panels.",
+      "type": "single",
       "options": [
         {
-          "id": "E9077EM2E",
-          "code": "E9077EM2E",
-          "name": "WLAN 802.11be (Wi-Fi 7) 320MHz 测量应用软件 (Node-locked)",
-          "englishName": "WLAN 802.11be (Wi-Fi 7) measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$7,800",
-          "supportsLicense": true,
-          "description": "支持 Wi-Fi 7 (802.11be) 320 MHz 信道带宽、4096QAM 调制品质与 Multi-RU 分析。",
-          "englishDescription": "WLAN 802.11be Wi-Fi 7 320MHz measurement app."
+          "id": "M9010A",
+          "code": "M9010A",
+          "name": "M9010A 10 槽 PXIe 高性能机箱 (Gen3)",
+          "englishName": "M9010A 10-slot PXIe chassis, Gen 3",
+          "category": "Chassis",
+          "priceEstimate": "+$8,900",
+          "description": "10 槽 Gen3 PXIe 背板机箱，提供高达 24 GB/s 系统带宽。"
         },
         {
-          "id": "Y9077EM2E",
-          "code": "Y9077EM2E",
-          "name": "WLAN 802.11be (Wi-Fi 7) 320MHz 测量软件 (Transportable)",
-          "englishName": "WLAN 802.11be (Wi-Fi 7) measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$9,500",
-          "supportsLicense": true,
-          "description": "可转移许可证 Wi-Fi 7 320MHz 测量分析软件。",
-          "englishDescription": "Transportable Wi-Fi 7 320MHz measurement app."
+          "id": "M9019A",
+          "code": "M9019A",
+          "name": "M9019A 18 槽 PXIe 大容量机箱 (Gen3)",
+          "englishName": "M9019A 18-slot PXIe chassis, Gen 3",
+          "category": "Chassis",
+          "priceEstimate": "+$12,800",
+          "description": "18 槽 Gen3 超大容量背板机箱，支持多模块扩展。"
         },
         {
-          "id": "E9077EM1E",
-          "code": "E9077EM1E",
-          "name": "WLAN 802.11ac/ax (Wi-Fi 6E) 测量应用软件 (Node-locked)",
-          "englishName": "WLAN 802.11ac/ax measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$6,200",
-          "supportsLicense": true,
-          "description": "Wi-Fi 5 (11ac) 及 Wi-Fi 6/6E (11ax) 160MHz 解调分析。",
-          "englishDescription": "WLAN 802.11ac/ax Wi-Fi 6E measurement app."
-        },
-        {
-          "id": "Y9077EM1E",
-          "code": "Y9077EM1E",
-          "name": "WLAN 802.11ac/ax (Wi-Fi 6E) 测量软件 (Transportable)",
-          "englishName": "WLAN 802.11ac/ax measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$7,500",
-          "supportsLicense": true,
-          "description": "可转移许可证 Wi-Fi 6E 测量分析软件。",
-          "englishDescription": "Transportable Wi-Fi 6E measurement app."
-        },
-        {
-          "id": "E9077EM0E",
-          "code": "E9077EM0E",
-          "name": "WLAN 802.11a/b/g/n 经典无线局域网测量软件",
-          "englishName": "WLAN 802.11a/b/g/n measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,200",
-          "supportsLicense": true,
-          "description": "传统 WLAN 802.11 协议标准解调测试。",
-          "englishDescription": "Standard WLAN 802.11a/b/g/n measurement app."
-        },
-        {
-          "id": "Y9077EM0E",
-          "code": "Y9077EM0E",
-          "name": "WLAN 802.11a/b/g/n 经典无线局域网测量软件 (Transportable)",
-          "englishName": "WLAN 802.11a/b/g/n measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,200",
-          "supportsLicense": true,
-          "description": "可转移许可证经典 WLAN 测试软件。",
-          "englishDescription": "Transportable classic WLAN measurement app."
-        },
-        {
-          "id": "E9081EM0E",
-          "code": "E9081EM0E",
-          "name": "Bluetooth 蓝牙测量应用软件 (Bluetooth 5 / BLE)",
-          "englishName": "Bluetooth measurement app",
-          "category": "Measurement App",
-          "priceEstimate": "+$3,800",
-          "supportsLicense": true,
-          "description": "经典蓝牙及 BLE 4.0/4.2/5 单键调制性能测量。",
-          "englishDescription": "Bluetooth BR/EDR and Low Energy measurement app."
-        },
-        {
-          "id": "Y9081EM0E",
-          "code": "Y9081EM0E",
-          "name": "Bluetooth 蓝牙测量应用软件 (Transportable)",
-          "englishName": "Bluetooth measurement app, Transportable",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,800",
-          "supportsLicense": true,
-          "description": "可转移许可证蓝牙 5 测量软件。",
-          "englishDescription": "Transportable Bluetooth 5 measurement app."
+          "id": "M9046A",
+          "code": "M9046A",
+          "name": "M9046A 18 槽高功率 PXIe 机箱 (High Power)",
+          "englishName": "M9046A High power, 18-slot PXIe chassis, Gen 3",
+          "category": "Chassis",
+          "priceEstimate": "+$16,500",
+          "description": "提供额外高功率散热与供电支持的 18 槽 PXIe 机箱。"
         }
       ]
     },
     {
       "id": "step8",
       "stepNumber": 8,
-      "title": "选择通用调制解调与算法计算软件 (General Demod & MATLAB Software)",
-      "englishTitle": "General Demod & MATLAB Software",
-      "subtitle": "VMA 数字调制解调、Custom OFDM 及嵌入式 MATLAB 计算包",
-      "englishSubtitle": "VMA digital demodulation, Custom OFDM, and embedded MATLAB.",
+      "title": "D.3 ~ D.5 选配机柜套件与专用校准电缆配件 (Accessories & Cables)",
+      "englishTitle": "Section D.3 - D.5: Accessories & Calibration Cables",
+      "subtitle": "模拟 BBIQ 校准套件 Y1823A、射频转接线与机架件",
+      "englishSubtitle": "BBIQ Calibration kit Y1823A, coaxial cables and rack mount kits.",
       "type": "multiple",
       "options": [
         {
-          "id": "E9054EM0E",
-          "code": "E9054EM0E",
-          "name": "VMA 通用数字调制解调软件 (Digital Demodulation)",
-          "englishName": "Vector modulation analysis Digital Demodulation",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,500",
-          "supportsLicense": true,
-          "description": "分析 FSK、PSK、QAM、APSK 等 40 多种数字调制格式。",
-          "englishDescription": "Flexible digital demodulation for over 40 formats."
+          "id": "Y1823A",
+          "code": "Y1823A",
+          "name": "Analog Baseband I/Q 校准套件 (模拟 BBIQ 必选)",
+          "englishName": "Calibration kit for Baseband I/Q analyzer with cables",
+          "category": "Calibration Kit",
+          "priceEstimate": "+$3,600",
+          "description": "包含 8 根 SMB-SMB 射频电缆与 USB 缆线，模拟 BBIQ 校准必选工具。"
         },
         {
-          "id": "E9054EM1E",
-          "code": "E9054EM1E",
-          "name": "VMA Custom OFDM 自定义 OFDM 调制解调软件",
-          "englishName": "Vector modulation analysis Custom OFDM",
-          "category": "Measurement App",
-          "priceEstimate": "+$4,800",
-          "supportsLicense": true,
-          "description": "自定义 OFDM 物理层框架与调制解调测试。",
-          "englishDescription": "Custom OFDM modulation analysis."
+          "id": "Y1824A",
+          "code": "Y1824A",
+          "name": "Coaxial Cable 50-Ohm SMB-F to SMP-F (300 mm)",
+          "englishName": "Cable assembly SMB-female to SMP-female 300 mm",
+          "category": "Cable",
+          "priceEstimate": "+$450",
+          "description": "精密的 50 欧姆 SMB 至 SMP 射频同轴连接线。"
         },
         {
-          "id": "E9055EM0E",
-          "code": "E9055EM0E",
-          "name": "VMA 高级扩展测量软件 (Advanced Modulation Analysis)",
-          "englishName": "Vector modulation analysis Advanced",
-          "category": "Measurement App",
-          "priceEstimate": "+$5,200",
-          "supportsLicense": true,
-          "description": "高级矢量解调与失真分析。",
-          "englishDescription": "Advanced modulation analysis."
-        },
-        {
-          "id": "N6171A",
-          "code": "N6171A",
-          "name": "MATLAB 嵌入式计算与信号处理软件",
-          "englishName": "MATLAB software",
-          "category": "Measurement App",
-          "priceEstimate": "+$3,500",
-          "supportsLicense": true,
-          "description": "在 VXT 中直接运行自定义 MATLAB IQ 信号处理算法。",
-          "englishDescription": "Executes MATLAB code directly inside VXT."
+          "id": "Y1271A",
+          "code": "Y1271A",
+          "name": "M9010A 机箱 19 英寸标准机架安装套件",
+          "englishName": "Rack mount kit for M9010A chassis",
+          "category": "Rack Mount",
+          "priceEstimate": "+$850",
+          "description": "包含固定滑轨与机架耳件。"
         }
       ]
     },
     {
       "id": "step9",
       "stepNumber": 9,
-      "title": "选择校准服务与保修计划 (Add Calibration & Warranty Plans)",
-      "englishTitle": "Add Calibration & Warranty Plans",
-      "subtitle": "出厂商业校准证书及 3/5 年原厂返厂保修与现场服务",
-      "englishSubtitle": "Commercial calibration certificate and 3/5 years calibration assurance plans.",
+      "title": "E.1 & E.2 选择测量应用软件与 Signal Studio (Measurement Apps & Signal Studio)",
+      "englishTitle": "Section E: Measurement Apps & Signal Studio",
+      "subtitle": "5G NR、WLAN 802.11be、LTE 与蓝牙单键测量软件",
+      "englishSubtitle": "5G NR, WLAN 802.11be, LTE and Bluetooth measurement software.",
+      "type": "multiple",
+      "options": [
+        {
+          "id": "N9085EM0E",
+          "code": "N9085EM0E",
+          "name": "5G NR 测量应用软件 (5G NR Measurement App)",
+          "englishName": "5G NR measurement application",
+          "category": "Software App",
+          "priceEstimate": "+$9,800",
+          "supportsLicense": true,
+          "description": "支持 5G NR 信号一键 EVM 分析与频谱发射蒙板测试。"
+        },
+        {
+          "id": "N9077EM2E",
+          "code": "N9077EM2E",
+          "name": "WLAN 802.11be / 802.11bn 极高吞吐量测量软件",
+          "englishName": "WLAN 802.11be and 802.11bn measurement application",
+          "category": "Software App",
+          "priceEstimate": "+$8,500",
+          "supportsLicense": true,
+          "description": "支持 Wi-Fi 7/8 (4096-QAM) 调制解调测试。"
+        },
+        {
+          "id": "N7631EMBC",
+          "code": "N7631EMBC",
+          "name": "Signal Studio for 5G NR 波形回放生成软件",
+          "englishName": "Signal Studio for 5G NR waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$6,500",
+          "supportsLicense": true,
+          "description": "快速合成符合 3GPP 标准的 5G NR 下行与上行测试波形。"
+        }
+      ]
+    },
+    {
+      "id": "step10",
+      "stepNumber": 10,
+      "title": "E.3 & E.4 选择软件捆绑包与 MATLAB 分析选件 (Software Bundles & MATLAB)",
+      "englishTitle": "Section E.3 & E.4: Software Bundles & MATLAB",
+      "subtitle": "Signal Studio 综合优惠捆绑包与 MATLAB 自定义波形创建",
+      "englishSubtitle": "Combined measurement bundles and MATLAB custom waveform software.",
+      "type": "multiple",
+      "options": [
+        {
+          "id": "N7650B",
+          "code": "N7650B",
+          "name": "Signal Studio & X-Series 综合测量应用软件捆绑包",
+          "englishName": "Signal Studio & Measurement Apps Bundle",
+          "category": "Software Bundle",
+          "priceEstimate": "+$18,500",
+          "supportsLicense": true,
+          "description": "包含 WLAN、LTE、5G NR 组合波形回放与分析授权。"
+        },
+        {
+          "id": "N6171A",
+          "code": "N6171A",
+          "name": "MATLAB 软件选件 (Custom Waveform & Data Analysis)",
+          "englishName": "MATLAB software option for Keysight instruments",
+          "category": "Software",
+          "priceEstimate": "+$3,200",
+          "description": "直接在 VXT 平台上运行 MATLAB 生成自定义任意波形与高级分析。"
+        }
+      ]
+    },
+    {
+      "id": "step11",
+      "stepNumber": 11,
+      "title": "F. 选择原厂校准与 KeysightCare 服务保障 (Calibration & KeysightCare Tiers)",
+      "englishTitle": "Section F: Calibration & KeysightCare Support",
+      "subtitle": "原厂商业校准证书与 KeysightCare 3 年 / 5 年服务计划",
+      "englishSubtitle": "Commercial calibration certificate and multi-year KeysightCare support tiers.",
       "type": "multiple",
       "options": [
         {
           "id": "M9415B-UK6",
           "code": "M9415B-UK6",
-          "name": "带测试数据的商业校准证书 (Commercial Calibration)",
+          "name": "ISO 17025 原厂符合性商业校准证书 (带测试数据)",
           "englishName": "Commercial calibration certificate with test data",
           "category": "Calibration",
-          "priceEstimate": "+$950",
-          "description": "附带 M9415B 工厂全套 RF 与 BBIQ 实测数据报告。",
-          "englishDescription": "Commercial calibration certificate with factory test data."
+          "priceEstimate": "+$1,450",
+          "description": "附带完整测试数据与测量不确定度分析的原厂校准证书。"
         },
         {
-          "id": "R-50C-011-3-",
-          "code": "R-50C-011-3-",
-          "name": "3 年期原厂返厂校准保障计划 (3 Years Cal Plan)",
-          "englishName": "Calibration Assurance Plan, Return-to-Keysight, 3 years",
-          "category": "Warranty",
-          "priceEstimate": "+$2,800",
-          "description": "3 年内定期返厂检测校准与指标超差自动调整。",
-          "englishDescription": "3-year return-to-Keysight calibration assurance plan."
-        },
-        {
-          "id": "R-50C-011-5-",
-          "code": "R-50C-011-5-",
-          "name": "5 年期原厂返厂校准保障计划 (5 Years Cal Plan)",
-          "englishName": "Calibration Assurance Plan, Return-to-Keysight, 5 years",
-          "category": "Warranty",
+          "id": "R-55B-001-3",
+          "code": "R-55B-001-3",
+          "name": "KeysightCare Enhanced 3 年期服务扩展 (推荐)",
+          "englishName": "KeysightCare Enhanced - Extend to 3 years",
+          "category": "Service",
           "priceEstimate": "+$4,800",
-          "description": "5 年内定期返厂检测校准与指标超差自动调整。",
-          "englishDescription": "5-year return-to-Keysight calibration assurance plan."
+          "description": "包含 3 年专属技术支持、保修加急响应与原厂定期校准。"
         },
         {
-          "id": "PS-S40-01",
-          "code": "PS-S40-01",
-          "name": "定制化应用提升支持服务 (Productivity Assistance Level 1)",
-          "englishName": "Service: Productivity assistance",
+          "id": "R-55B-001-5",
+          "code": "R-55B-001-5",
+          "name": "KeysightCare Enhanced 5 年期服务扩展 (推荐)",
+          "englishName": "KeysightCare Enhanced - Extend to 5 years",
           "category": "Service",
-          "priceEstimate": "+$2,800",
-          "description": "Keysight 专家现场针对具体 DUT 与测试用例提供调试咨询。",
-          "englishDescription": "Daily instrument and application consulting using your equipment."
-        },
-        {
-          "id": "PS-S40-02",
-          "code": "PS-S40-02",
-          "name": "应用提升服务 Level 2",
-          "englishName": "Service: Productivity assistance level 2",
-          "category": "Service",
-          "priceEstimate": "+$3,500",
-          "description": "高级应用调试咨询工程支持。",
-          "englishDescription": "Productivity assistance level 2."
-        },
-        {
-          "id": "PS-S40-04",
-          "code": "PS-S40-04",
-          "name": "应用提升服务 Level 4",
-          "englishName": "Service: Productivity assistance level 4",
-          "category": "Service",
-          "priceEstimate": "+$5,200",
-          "description": "深度定制应用调试咨询工程支持。",
-          "englishDescription": "Productivity assistance level 4."
+          "priceEstimate": "+$8,200",
+          "description": "提供全生命周期 5 年最高级别原厂保修、技术响应与免费校准。"
         }
       ]
     }
