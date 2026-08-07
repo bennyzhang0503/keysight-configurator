@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.2.7";
+export const APP_VERSION = "v2.2.8";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -271,6 +271,10 @@ class ConfiguratorApp {
       exportLogsBtn: document.getElementById("exportLogsBtn"),
       txtLoggerModalTitle: document.getElementById("txtLoggerModalTitle"),
       txtLogger: document.getElementById("txtLogger"),
+
+      mobilePrevStepBtn: document.getElementById("mobilePrevStepBtn"),
+      mobileNextStepBtn: document.getElementById("mobileNextStepBtn"),
+      mobileDrawerTrigger: document.getElementById("mobileDrawerTrigger"),
 
       // Lang Switcher Buttons
       langZhBtn: document.getElementById("langZhBtn"),
@@ -665,6 +669,17 @@ class ConfiguratorApp {
       this.dom.openMobileDrawerBtn.addEventListener("click", () => {
         this.dom.previewDrawer.classList.add("open");
       });
+    }
+    if (this.dom.mobileDrawerTrigger && this.dom.previewDrawer) {
+      this.dom.mobileDrawerTrigger.addEventListener("click", () => {
+        this.dom.previewDrawer.classList.add("open");
+      });
+    }
+    if (this.dom.mobilePrevStepBtn) {
+      this.dom.mobilePrevStepBtn.addEventListener("click", () => this.navigateRelativeStep(-1));
+    }
+    if (this.dom.mobileNextStepBtn) {
+      this.dom.mobileNextStepBtn.addEventListener("click", () => this.navigateRelativeStep(1));
     }
 
     if (this.dom.closeDrawerBtn && this.dom.previewDrawer) {
@@ -1345,6 +1360,31 @@ class ConfiguratorApp {
     if (this.dom.progressFill) {
       this.dom.progressFill.style.width = `${((stepIdx > 0 ? stepIdx : 1) / steps.length) * 100}%`;
     }
+
+    const currentIdx = steps.findIndex(s => s.id === this.currentStepId);
+    if (this.dom.mobilePrevStepBtn) {
+      this.dom.mobilePrevStepBtn.disabled = currentIdx <= 0;
+      this.dom.mobilePrevStepBtn.style.opacity = currentIdx <= 0 ? "0.4" : "1";
+    }
+    if (this.dom.mobileNextStepBtn) {
+      this.dom.mobileNextStepBtn.disabled = currentIdx >= steps.length - 1;
+      this.dom.mobileNextStepBtn.style.opacity = currentIdx >= steps.length - 1 ? "0.4" : "1";
+    }
+  }
+
+  navigateRelativeStep(delta) {
+    if (!this.currentInstrument || !this.currentInstrument.steps) return;
+    const steps = this.currentInstrument.steps;
+    const currentIdx = steps.findIndex(s => s.id === this.currentStepId);
+    if (currentIdx === -1) return;
+
+    const targetIdx = currentIdx + delta;
+    if (targetIdx >= 0 && targetIdx < steps.length) {
+      this.setCurrentStep(steps[targetIdx].id);
+      if (this.dom.stepContentContainer) {
+        this.dom.stepContentContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   }
 
   setCurrentStep(stepId, preserveSearch = false) {
@@ -1357,6 +1397,13 @@ class ConfiguratorApp {
         if (this.dom.searchInput) this.dom.searchInput.value = "";
       }
       this.render();
+
+      setTimeout(() => {
+        const activeTab = document.querySelector(`.step-tab[data-step-id="${stepId}"]`);
+        if (activeTab) {
+          activeTab.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }
+      }, 50);
     }
   }
 
