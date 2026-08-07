@@ -1,11 +1,11 @@
-// Keysight M9415B Configurator Dataset (Official Sections A-F)
+// Keysight M9415B Configurator Dataset (35 Software Options)
 export const M9415B_DATA = {
   "id": "M9415B",
   "name": "M9415B VXT PXIe Vector Transceiver",
-  "subtitle": "330 MHz to 20 GHz RF Transceiver & 1.2 GHz Analysis Bandwidth",
+  "subtitle": "330 MHz to 20 GHz RF Transceiver & 1.2 GHz Bandwidth",
   "family": "PXI Modular Vector Transceivers",
   "docNumber": "5992-3126 / M9415B",
-  "description": "The Keysight M9415B VXT PXIe vector transceiver is a compact multi-functional PXI solution for RF and baseband I/Q (BBIQ) signal analysis up to 20 GHz with up to 1.2 GHz bandwidth.",
+  "description": "Keysight M9415B VXT 矢量收发信机是面向 20 GHz 以下微波与 BBIQ 信号发生与分析的高性能 PXIe 模块。",
   "baseSpecs": {
     "display": "PXI Modular Architecture (Requires PXIe Chassis & Controller)",
     "frequency": "330 MHz to 8.5 GHz (Standard Option F08)",
@@ -29,19 +29,19 @@ export const M9415B_DATA = {
           "name": "VXT PXIe 矢量收发信机核心模块 (Analog BBIQ)",
           "englishName": "VXT PXIe Vector Transceiver with Analog BBIQ",
           "category": "Transceiver Module",
-          "priceEstimate": "$48,500",
+          "priceEstimate": "$45,000",
           "description": "提供矢量信号发生与矢量信号分析双向 RF 及模拟 BBIQ 输入输出接口。"
         },
         {
           "id": "M9415B-F08",
           "code": "M9415B-F08",
           "name": "频率范围 330 MHz 至 8.5 GHz (出厂标配)",
-          "englishName": "Frequency range, 330 MHz to 8.5 GHz",
+          "englishName": "Frequency range, 频率范围 330 MHz 至 8.5 GHz (出厂标配)",
           "category": "Frequency",
           "isStandard": true,
           "priceEstimate": "Standard",
           "freqMaxGHz": 8.5,
-          "description": "覆盖 8.5 GHz 以下 Sub-6GHz 5G NR、Wi-Fi 6E/7 与通用 RF 射频测试。"
+          "description": "出厂包含的基础工作频率范围。"
         },
         {
           "id": "M9415B-F13",
@@ -200,7 +200,9 @@ export const M9415B_DATA = {
           "englishName": "M9300A Frequency Reference No Export License",
           "category": "Frequency Reference",
           "priceEstimate": "Standard",
-          "requires": ["M9300A"],
+          "requires": [
+            "M9300A"
+          ],
           "description": "出厂符合全球无出口许可证限制标准的时钟配置。"
         }
       ]
@@ -322,62 +324,302 @@ export const M9415B_DATA = {
     {
       "id": "step9",
       "stepNumber": 9,
-      "title": "E.1 & E.2 选择测量应用软件与 Signal Studio (Measurement Apps & Signal Studio)",
-      "englishTitle": "Section E: Measurement Apps & Signal Studio",
-      "subtitle": "5G NR、WLAN 802.11be、LTE 与蓝牙单键测量软件",
-      "englishSubtitle": "5G NR, WLAN 802.11be, LTE and Bluetooth measurement software.",
+      "title": "E.1 & E.2 选择 X-Series 测量应用软件与 Signal Studio 波形生成",
+      "englishTitle": "Section E.1 & E.2: X-Series Measurement Apps & Signal Studio",
+      "subtitle": "5G NR、WLAN 802.11be、LTE、蓝牙与 Signal Studio 波形回放授权",
+      "englishSubtitle": "5G NR, WLAN 802.11be, LTE, Bluetooth and Signal Studio playback software.",
       "type": "multiple",
       "options": [
         {
           "id": "N9085EM0E",
           "code": "N9085EM0E",
-          "name": "5G NR 测量应用软件 (5G NR Measurement App)",
-          "englishName": "5G NR measurement application",
-          "category": "Software App",
+          "name": "5G NR 矢量测量应用软件 (5G NR App)",
+          "englishName": "5G NR Measurement application",
+          "category": "Measurement App",
           "priceEstimate": "+$9,800",
           "supportsLicense": true,
           "description": "支持 5G NR 信号一键 EVM 分析与频谱发射蒙板测试。"
+        },
+        {
+          "id": "N9077EM0E",
+          "code": "N9077EM0E",
+          "name": "WLAN 802.11a/b/g/j/p/n/af/ah 测量应用软件",
+          "englishName": "WLAN 802.11a/b/g/j/p/n/af/ah measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$4,500",
+          "supportsLicense": true,
+          "description": "基础 WLAN 无线局域网解调分析软件。"
+        },
+        {
+          "id": "N9077EM1E",
+          "code": "N9077EM1E",
+          "name": "WLAN 802.11ac/ax 高吞吐量测量应用软件",
+          "englishName": "WLAN 802.11/ac/ax measurement Application",
+          "category": "Measurement App",
+          "priceEstimate": "+$6,800",
+          "supportsLicense": true,
+          "description": "支持 Wi-Fi 5 / Wi-Fi 6 宽带解调分析。"
         },
         {
           "id": "N9077EM2E",
           "code": "N9077EM2E",
           "name": "WLAN 802.11be / 802.11bn 极高吞吐量测量软件",
           "englishName": "WLAN 802.11be and 802.11bn measurement application",
-          "category": "Software App",
+          "category": "Measurement App",
           "priceEstimate": "+$8,500",
           "supportsLicense": true,
           "description": "支持 Wi-Fi 7/8 (4096-QAM) 调制解调测试。"
         },
         {
+          "id": "N9080EM0E",
+          "code": "N9080EM0E",
+          "name": "LTE & LTE-Advanced FDD 测量应用软件",
+          "englishName": "LTE and LTE-Advanced FDD measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$5,600",
+          "supportsLicense": true,
+          "description": "LTE FDD 蜂窝通信信号分析与载波聚合测试。"
+        },
+        {
+          "id": "N9082EM0E",
+          "code": "N9082EM0E",
+          "name": "LTE & LTE-Advanced TDD 测量应用软件",
+          "englishName": "LTE and LTE-Advanced TDD Measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$5,600",
+          "supportsLicense": true,
+          "description": "LTE TDD 时分双工信号分析。"
+        },
+        {
+          "id": "N9080EM3E",
+          "code": "N9080EM3E",
+          "name": "NB-IoT & eMTC FDD 窄带物联网测量应用软件",
+          "englishName": "NB-IoT and eMTC FDD measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$4,200",
+          "supportsLicense": true,
+          "description": "窄带物联网低功耗设备解调测试。"
+        },
+        {
+          "id": "N9080EM4E",
+          "code": "N9080EM4E",
+          "name": "LTE-V2X 车联网测量应用软件",
+          "englishName": "LTE-V2X measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$4,800",
+          "supportsLicense": true,
+          "description": "车联网直连通信调制质量分析。"
+        },
+        {
+          "id": "N9081EM0E",
+          "code": "N9081EM0E",
+          "name": "Bluetooth 蓝牙测量应用软件 (Bluetooth App)",
+          "englishName": "Bluetooth measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$3,800",
+          "supportsLicense": true,
+          "description": "经典蓝牙与低功耗蓝牙 (BLE 5.x) 信号解调。"
+        },
+        {
+          "id": "N9054EM0E",
+          "code": "N9054EM0E",
+          "name": "数字调制分析软件 (Digital Demodulation App)",
+          "englishName": "Vector modulation analysis digital demodulation application",
+          "category": "Measurement App",
+          "priceEstimate": "+$4,200",
+          "supportsLicense": true,
+          "description": "通用 QPSK、16QAM、64QAM 通用数字调制格式分析。"
+        },
+        {
+          "id": "N9054EM1E",
+          "code": "N9054EM1E",
+          "name": "定制 OFDM 调制测量应用软件",
+          "englishName": "Vector modulation analysis custom OFDM application",
+          "category": "Measurement App",
+          "priceEstimate": "+$5,200",
+          "supportsLicense": true,
+          "description": "自定义 OFDM 子载波与前导码调制解调。"
+        },
+        {
+          "id": "N9055EM0E",
+          "code": "N9055EM0E",
+          "name": "射频功放测量应用软件 (PA Measurement App)",
+          "englishName": "Power amplifier measurement application",
+          "category": "Measurement App",
+          "priceEstimate": "+$4,800",
+          "supportsLicense": true,
+          "description": "功率放大器增益压缩与 AM-AM / AM-PM 畸变分析。"
+        },
+        {
           "id": "N7631EMBC",
           "code": "N7631EMBC",
           "name": "Signal Studio for 5G NR 波形回放生成软件",
-          "englishName": "Signal Studio for 5G NR waveform playback",
+          "englishName": "Signal Studio for 5G NR, waveform playback",
           "category": "Signal Studio",
           "priceEstimate": "+$6,500",
           "supportsLicense": true,
           "description": "快速合成符合 3GPP 标准的 5G NR 下行与上行测试波形。"
+        },
+        {
+          "id": "N7617EMBC",
+          "code": "N7617EMBC",
+          "name": "Signal Studio for WLAN 802.11 波形回放软件",
+          "englishName": "Signal Studio for WLAN 802.11, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$4,500",
+          "supportsLicense": true,
+          "description": "生成 802.11a/b/g/n/ac/ax/be WLAN 测试序列。"
+        },
+        {
+          "id": "N7624EMBC",
+          "code": "N7624EMBC",
+          "name": "Signal Studio for LTE/LTE-A FDD 波形回放软件",
+          "englishName": "Signal Studio for LTE/LTE-Advanced FDD, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$4,200",
+          "supportsLicense": true,
+          "description": "生成 LTE FDD 复杂多载波基站与终端波形。"
+        },
+        {
+          "id": "N7625EMBC",
+          "code": "N7625EMBC",
+          "name": "Signal Studio for LTE/LTE-A TDD 波形回放软件",
+          "englishName": "Signal Studio for LTE/LTE-Advanced TDD, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$4,200",
+          "supportsLicense": true,
+          "description": "生成 LTE TDD 帧结构测试信号。"
+        },
+        {
+          "id": "N7606EMBC",
+          "code": "N7606EMBC",
+          "name": "Signal Studio for Bluetooth 蓝牙波形回放软件",
+          "englishName": "Signal Studio for Bluetooth, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$3,200",
+          "supportsLicense": true,
+          "description": "生成蓝牙 BR/EDR 与 LE 高速波形。"
+        },
+        {
+          "id": "N7608EMBC",
+          "code": "N7608EMBC",
+          "name": "Signal Studio for Custom Modulation 定制调制波形生成软件",
+          "englishName": "Signal Studio for Custom modulation, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$5,200",
+          "supportsLicense": true,
+          "description": "自由定义符号率与滤波器的通用数字调制波形。"
+        },
+        {
+          "id": "N7626EMBC",
+          "code": "N7626EMBC",
+          "name": "Signal Studio for V2X 车联网波形回放软件",
+          "englishName": "Signal Studio for V2X, waveform playback",
+          "category": "Signal Studio",
+          "priceEstimate": "+$4,500",
+          "supportsLicense": true,
+          "description": "生成 C-V2X 射频测试波形。"
         }
       ]
     },
     {
       "id": "step10",
       "stepNumber": 10,
-      "title": "E.3 & E.4 选择软件捆绑包与 MATLAB 分析选件 (Software Bundles & MATLAB)",
-      "englishTitle": "Section E.3 & E.4: Software Bundles & MATLAB",
-      "subtitle": "Signal Studio 综合优惠捆绑包与 MATLAB 自定义波形创建",
-      "englishSubtitle": "Combined measurement bundles and MATLAB custom waveform software.",
+      "title": "E.3 & E.4 选购 Y-App 软件综合捆绑包与 MATLAB 分析软件",
+      "englishTitle": "Section E.3 & E.4: Y-App Bundles & MATLAB Software",
+      "subtitle": "Signal Studio 综合优惠捆绑包、通用波形包与 MATLAB 接口",
+      "englishSubtitle": "Combined measurement Y-bundles, 5/50 Waveform Packs and MATLAB software.",
       "type": "multiple",
       "options": [
         {
+          "id": "Y9085EM0E",
+          "code": "Y9085EM0E",
+          "name": "5G NR 波形生成与分析软件综合捆绑包 (5G NR Y-App Bundle)",
+          "englishName": "5G NR Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$14,500",
+          "supportsLicense": true,
+          "description": "包含 5G NR 矢量分析及 Signal Studio 无限制波形回放授权。"
+        },
+        {
+          "id": "Y9077EM0E",
+          "code": "Y9077EM0E",
+          "name": "WLAN 802.11a/b/g/j/p/n 波形生成与分析软件捆绑包",
+          "englishName": "WLAN 802.11a/b/g/j/p/n Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$7,800",
+          "supportsLicense": true,
+          "description": "基础 Wi-Fi 信号生成与矢量分析组合捆绑包。"
+        },
+        {
+          "id": "Y9077EM1E",
+          "code": "Y9077EM1E",
+          "name": "WLAN 802.11ac/ax 波形生成与分析软件捆绑包",
+          "englishName": "WLAN 802.11ac/ax Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$11,200",
+          "supportsLicense": true,
+          "description": "Wi-Fi 5 / Wi-Fi 6 超大带宽信号生成与矢量分析捆绑包。"
+        },
+        {
+          "id": "Y9077EM2E",
+          "code": "Y9077EM2E",
+          "name": "WLAN 802.11be/bn (Wi-Fi 7/8) 波形生成与分析软件捆绑包",
+          "englishName": "WLAN 802.11be/bn Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$13,500",
+          "supportsLicense": true,
+          "description": "Wi-Fi 7/8 极高吞吐量波形发生与解调综合捆绑包。"
+        },
+        {
+          "id": "Y9080EM0E",
+          "code": "Y9080EM0E",
+          "name": "LTE & LTE-Advanced FDD 波形生成与分析软件捆绑包",
+          "englishName": "LTE and LTE-Advanced FDD Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$9,200",
+          "supportsLicense": true,
+          "description": "LTE FDD 信号生成与分析组合捆绑包。"
+        },
+        {
+          "id": "Y9082EM0E",
+          "code": "Y9082EM0E",
+          "name": "LTE & LTE-Advanced TDD 波形生成与分析软件捆绑包",
+          "englishName": "LTE and LTE-Advanced TDD Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$9,200",
+          "supportsLicense": true,
+          "description": "LTE TDD 信号生成与分析组合捆绑包。"
+        },
+        {
+          "id": "Y9081EM0E",
+          "code": "Y9081EM0E",
+          "name": "Bluetooth 蓝牙波形生成与分析软件捆绑包",
+          "englishName": "Bluetooth Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$6,500",
+          "supportsLicense": true,
+          "description": "蓝牙经典与 BLE 5.x 信号生成与解调捆绑包。"
+        },
+        {
+          "id": "Y9080EM3E",
+          "code": "Y9080EM3E",
+          "name": "NB-IoT & eMTC FDD 窄带物联网波形与分析捆绑包",
+          "englishName": "NB-IoT and eMTC FDD Waveform and Measurement Application Bundle",
+          "category": "Y-App Bundle",
+          "priceEstimate": "+$6,800",
+          "supportsLicense": true,
+          "description": "窄带物联网波形生成与测试捆绑包。"
+        },
+        {
           "id": "N7650B",
           "code": "N7650B",
-          "name": "Signal Studio & X-Series 综合测量应用软件捆绑包",
-          "englishName": "Signal Studio & Measurement Apps Bundle",
-          "category": "Software Bundle",
+          "name": "Signal Studio 5/50 通用波形包授权 (5/50 Pack License)",
+          "englishName": "5/50 pack license for supported formats",
+          "category": "Waveform Pack",
           "priceEstimate": "+$18,500",
           "supportsLicense": true,
-          "description": "包含 WLAN、LTE、5G NR 组合波形回放与分析授权。"
+          "description": "提供 5 或 50 个自由分配格式的通用 Signal Studio 波形包许可。"
         },
         {
           "id": "N6171A",
