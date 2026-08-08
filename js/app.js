@@ -5,7 +5,7 @@ import { RuleEngine } from './engine/ruleEngine.js';
 import { ExportUtils } from './utils/exportUtils.js';
 import { logger } from './utils/logger.js';
 
-export const APP_VERSION = "v2.3.2";
+export const APP_VERSION = "v2.3.3";
 
 const DEFAULT_RECOMMENDED_IDS = [
   "N9010B-PFR", // Precision Frequency Reference
@@ -690,6 +690,11 @@ class ConfiguratorApp {
     }
     if (this.dom.mobileNextStepBtn) {
       this.dom.mobileNextStepBtn.addEventListener("click", () => this.navigateRelativeStep(1));
+    }
+    if (this.dom.mobileSearchToggleBtn && this.dom.headerActionsGroup) {
+      this.dom.mobileSearchToggleBtn.addEventListener("click", () => {
+        this.dom.headerActionsGroup.classList.toggle("show");
+      });
     }
 
     if (this.dom.closeDrawerBtn && this.dom.previewDrawer) {
