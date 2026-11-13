@@ -1,23 +1,39 @@
-# Keysight 仪表选件配置与预览系统 (Keysight Configurator v2.2.5)
+# Keysight 仪表选件配置与预览系统 (Keysight Configurator v2.6.0)
 
-基于 Keysight 官方红黑设计风格的高性能仪表选件配置与预览系统，包含 12 款旗舰仪表、1,074 张完整选件卡片、100% 对应 Keysight 官方选件配置指南 PDF，支持中英双语切换、模块化 ES 架构、依赖冲突校验、跨步骤智能回溯导航、调试日志一键导出及 PDF/CSV 报告导出。
+基于 Keysight 官方红黑设计风格的高性能仪表选件配置与预览系统，包含 21 款旗舰仪表、1,603 张完整选件卡片、100% 对应 Keysight 官方选件配置指南 PDF，支持中英双语切换、模块化 ES 架构、依赖冲突校验、跨步骤智能回溯导航、调试日志一键导出及 PDF/CSV 报告导出。
 
 ---
 
-## 🚀 最新版本特性 (v2.2.5)
+## 🚀 最新版本特性 (v2.6.0)
 
-1. **📋 调试日志与一键导出功能**：
-   - 包含全量用户点击流、切页、选件勾选与 `window.onerror` 全局异常捕获；
-   - 支持一键导出包含完整系统元数据与时序 Trace 的 `.txt` 调试日志报告；
-   - 接入 `sessionStorage` 持久化暂存，**刷新页面后操作日志完好保留**。
+1. **📦 全面覆盖 21 款 Keysight 核心信号分析仪与信号源/测试套件**：
+   - **信号分析仪系列 (Signal Analyzers)**：
+     - N9010B EXA (10 Hz - 44 GHz)
+     - N9020B MXA (10 Hz - 50 GHz)
+     - N9021B MXA (10 Hz - 50 GHz / 510 MHz BW)
+     - N9030B PXA (10 Hz - 50 GHz / 510 MHz BW)
+     - N9032B PXA (2 Hz - 55 GHz / 2 GHz RTSA BW)
+     - N9040B UXA (10 Hz - 50 GHz / 1 GHz BW / 14.1" Screen)
+     - N9042B UXA (2 Hz - 50 GHz / 110 GHz Ext / 4 GHz BW)
+     - SA6210A XA5 (2 Hz - 32 GHz / 双通道 / 2 GHz BW)
+     - SA6320A XA6 (2 Hz - 67 GHz / 8 GHz BW 顶级分析仪)
+   - **信号发生器系列 (Signal Generators)**：
+     - N5186A MXG 矢量 (9 kHz - 8.5 GHz / 4 通道 / 960 MHz BW)
+     - N5182B MXG 矢量 (9 kHz - 6 GHz / 160 MHz BW)
+     - N5183B MXG 微波模拟 (9 kHz - 40 GHz)
+     - SG6311A PSG XG7 (9 kHz - 20 GHz / 2 通道计量级)
+     - AP5021A G3 模拟 (9 kHz - 54 GHz)
+     - AP5022A G3 模拟 (9 kHz - 54 GHz / 4 通道)
+     - AP5041A 矢量 (100 kHz - 40 GHz / 2 GHz BW)
+     - AP5042A G3 矢量 (100 kHz - 40 GHz / 4 通道 / 2 GHz BW)
+     - M9484C VXG 矢量 (9 kHz - 54 GHz / 4 通道 / 2.5 GHz BW)
+   - **收发信机与无线测试套件 (Transceivers & Wireless Test Sets)**：
+     - M9415A VXT PXIe (380 MHz - 12 GHz / 1.2 GHz BW / VSG+VSA)
+     - M9415B VXT PXIe (380 MHz - 20 GHz / 1.2 GHz BW / Analog BBIQ)
+     - E6680E 无线测试套件 (Wi-Fi 6E/7/8 & 5G, 800 MHz BW)
 
-2. **📍 跨步骤依赖冲突智能导航与一键回溯 (v2.2.3/v2.2.4)**：
-   - 警告红框内置 `📍 跳转至 Step X 选择` 按钮；
-   - 步骤顶部内置 `↩️ 一键返回 Step Y` 提示条；
-   - 切换步骤自动重置搜索过滤，彻底解决选件卡片被旧关键词隐去的问题。
-
-3. **📄 12 款仪表官方 PDF 选件配置指南集成**：
-   - 顶栏及抽屉内直接打开原厂权威选件指南 PDF。
+2. **📄 21 款仪表官方 PDF 选件配置指南全量配套**：
+   - 切换任意机型，顶栏与配置预览抽屉中的「官方配置指南」按钮均精准直达原厂 PDF。
 
 ---
 

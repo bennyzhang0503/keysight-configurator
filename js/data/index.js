@@ -12,6 +12,13 @@ import { M9415B_DATA } from './models/m9415bData.js';
 import { E6680E_DATA } from './models/e6680eData.js';
 import { M9484C_DATA } from './models/m9484cData.js';
 import { SA6210A_DATA } from './models/sa6210aData.js';
+import { SA6320A_DATA } from './models/sa6320aData.js';
+import { N5183B_DATA } from './models/n5183bData.js';
+import { SG6311A_DATA } from './models/sg6311aData.js';
+import { AP5021A_DATA } from './models/ap5021aData.js';
+import { AP5022A_DATA } from './models/ap5022aData.js';
+import { AP5041A_DATA } from './models/ap5041aData.js';
+import { AP5042A_DATA } from './models/ap5042aData.js';
 
 export const LICENSE_TYPES = {
   NODE_LOCKED: {
@@ -70,8 +77,15 @@ export const KEYSIGHT_INSTRUMENTS = [
   N9040B_DATA,
   N9042B_DATA,
   SA6210A_DATA,
+  SA6320A_DATA,
   N5186A_DATA,
   N5182B_DATA,
+  N5183B_DATA,
+  SG6311A_DATA,
+  AP5021A_DATA,
+  AP5022A_DATA,
+  AP5041A_DATA,
+  AP5042A_DATA,
   M9484C_DATA,
   M9415A_DATA,
   M9415B_DATA,
