@@ -10,6 +10,7 @@ import { N5182B_DATA } from './models/n5182bData.js';
 import { M9415A_DATA } from './models/m9415aData.js';
 import { M9415B_DATA } from './models/m9415bData.js';
 import { E6680E_DATA } from './models/e6680eData.js';
+import { M9484C_DATA } from './models/m9484cData.js';
 
 export const LICENSE_TYPES = {
   NODE_LOCKED: {
@@ -69,6 +70,7 @@ export const KEYSIGHT_INSTRUMENTS = [
   N9042B_DATA,
   N5186A_DATA,
   N5182B_DATA,
+  M9484C_DATA,
   M9415A_DATA,
   M9415B_DATA,
   E6680E_DATA
